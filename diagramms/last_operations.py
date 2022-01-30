@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from time import time
 
-from db.ORM.query import get_stat
+from fin.db.ORM.query import get_stat
 
 
 def create_diagram(uid=1, period=1):
@@ -11,7 +11,7 @@ def create_diagram(uid=1, period=1):
     width = 0.55
     for item in data:
         labels.append(item[0])
-        labels.append(int(item[1]))
+        values.append(int(item[1]))
 
     fig, ax = plt.subplots()
 
@@ -21,7 +21,7 @@ def create_diagram(uid=1, period=1):
     ax.set_title('Расходы по категориям')
     ax.set_facecolor("#C0C0C0")
 
-    path = "../resources/{0}.png".format(str(uid) + "/" + str(int(time())))
+    path = "../resources/{0}.png".format(str(uid) + "." + str(int(time())))
     plt.savefig(path, facecolor="#FFE4E1")
     # plt.show()
 
