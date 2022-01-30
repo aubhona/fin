@@ -16,8 +16,8 @@ def create_diagram(uid=1, period=1):
 
     ax.bar(labels, values, width, label='Total', color="#696969")
 
-    ax.set_ylabel('Scores')
-    ax.set_title('Scores by group and gender')
+    ax.set_ylabel('Потрачено в общем')
+    ax.set_title('Расходы по категориям')
     ax.set_facecolor("#C0C0C0")
 
     path = "../resources/{0}.png".format(str(uid) + "/" + str(int(time())))
