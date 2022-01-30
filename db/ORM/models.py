@@ -1,4 +1,4 @@
-from intit_db import initdb
+from init_db import initdb
 
 db = initdb("sqlite:///site.db")
 
