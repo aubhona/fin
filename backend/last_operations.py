@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from time import time
 
-from fin.db.ORM.query import get_stat
+from query import get_stat
 
 
 def create_diagram(uid=1, period=1):

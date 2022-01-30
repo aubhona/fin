@@ -1,4 +1,4 @@
-from fin.db.ORM.models import *
+from models import *
 from datetime import datetime, timedelta
 from collections import defaultdict
 
