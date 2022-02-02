@@ -4,10 +4,38 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <a href="add.html"><button>Добавить операцию</button></a> <a href="diagram.html"><button>Диаграмма расходов</button></a> <a href="history.html"><button>История трат</button></a>
+    <a href="add.html"><button>Добавить операцию</button></a> <a href="diagram.html"><button>Диаграмма расходов</button></a> <a href="history.html"><button>История трат</button></a> <a href="head.html"><button>Вернуться на главную страницу</button></a>
     <hr>
 
     <form action="action_page.php">
-        
+        <h1>Добавить операцию</h1>
+        <p>Заполните чтобы добавить операцию</p>
+        <hr>
+
+        <label for="value"><b>Введите сумму операции в рублях</b></label>
+        <input type="number" placeholder="Введите сумму операции" name="value" required min="1">
+        <br>
+
+        <label for="date"><b>Введите дату операции</b></label>
+        <input type="date" name="date" required max="">
+        <br>
+
+        <label for="type"><b>Выберите тип операции</b></label>
+        <select name="type" size="1" required>
+            <option  value="+">Прибыль</option>
+            <option  value="-">Расходы</option>
+        </select>
+
+        <label for="kat"><b>Выберите тип операции</b></label>
+        <select name="kat" size="1">
+            <option value="0"></option>
+            <option value="1">Супермаркеты</option>
+            <option value="2">Развлечение</option>
+            <option value="3">Рестораны</option>
+            <option value="4">Переводы</option>
+        </select>
+        <br>
+
+        <button type="submit" class="add">Добавить</button>
     </form>
 </body>

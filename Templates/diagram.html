@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <a href="add.html"><button>Добавить операцию</button></a> <a href="diagram.html"><button>Диаграмма расходов</button></a> <a href="history.html"><button>История трат</button></a> <a href="head.html"><button>Вернуться на главную страницу</button></a>
+    <hr>
+
+    Диаграмма расходов:
+    
+    <br>
+    <br>
+
+
+    <form action="action_page.php">
+        <h1>Настройте вашу диаграмму</h1>
+
+        <label for="time"><b>Выберите за какое времы состаляется диаграмма</b></label>
+        <select name="time" size="1" required>
+            <option>Неделя</option>
+            <option>Месяц</option>
+            <option>3 Месяца</option>
+        </select>
+        <br>
+
+        <label for="kat"><b>Выберите типы операции</b></label>
+        <br>
+        <select name="kat" multiple>
+            <option value="1">Супермаркеты</option>
+            <option value="2">Развлечение</option>
+            <option value="3">Рестораны</option>
+            <option value="4">Переводы</option>
+        </select>
+        <br>
+
+        <button type="submit" class="add">Применить</button>
+    </form>
+</body>

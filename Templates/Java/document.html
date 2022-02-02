@@ -1,0 +1,132 @@
+<head>
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChiefSlider [Example 1]</title>
+  <link rel="stylesheet" href="new.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol';
+    }
+
+
+    .slider__container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .slider__items {
+      counter-reset: slide;
+    }
+
+    .slider__item {
+      -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      max-width: 100%;
+      counter-increment: slide;
+      position: relative;
+    }
+
+    .slider__item::before {
+      content: counter(slide) "/5";
+      position: absolute;
+      color: #fff;
+      font-style: italic;
+      font-weight: bold;
+      display: block;
+    }
+
+    .slider__item:nth-child(1) {
+      background-color: #f44336;
+    }
+
+    .slider__item:nth-child(2) {
+      background-color: #9c27b0;
+    }
+
+    .slider__item:nth-child(3) {
+      background-color: #3f51b5;
+    }
+
+    .slider__item:nth-child(4) {
+      background-color: #03a9f4;
+    }
+
+    .slider__item:nth-child(5) {
+      background-color: #4caf50;
+    }
+  </style>
+  <script defer src="new.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const slider = new ChiefSlider('.slider', {
+        loop: false
+      });
+    });
+  </script>
+<script async src='/cdn-cgi/bm/cv/669835187/api.js'></script></head>
+<body>
+    <div class="container">
+
+    <div class="slider">
+      <div class="slider__container">
+        <div class="slider__wrapper">
+          <div class="slider__items">
+            <div class="slider__item">
+              <img src="f.png">
+            </div>
+            <div class="slider__item">
+              <a href="add.html"><button>Добавить операцию</button></a> <a href="diagram.html"><button>Диаграмма расходов</button></a> <a href="history.html"><button>История трат</button></a>
+    <hr>
+
+    <form action="action_page.php">
+        
+    </form>
+            </div>
+            <div class="slider__item">
+              <form action="action_page.php">
+                <div class="container">
+                  <h1>Вход</h1>
+                  <p>Заполните для входа.</p>
+                  <hr>
+              
+                  <label for="email"><b>Почта</b></label>
+                  <input type="text" placeholder="Введите почту" name="email" required>
+              
+                  <label for="psw"><b>Пароль</b></label>
+                  <input type="password" placeholder="Введите пароль" name="psw" required>
+                  <hr>
+              
+                  <button type="submit" class="registerbtn"> Войти </button>
+                </div>
+              
+                <div class="container signin">
+                  <p>Еще не зарегестрированы? <a href="registration.html">Зарегистрироваться</a>.</p>
+                </div>
+              </form>
+            </div>
+            <div class="slider__item">
+              <!-- Контент 4 слайда -->
+            </div>
+            <div class="slider__item">
+              <!-- Контент 5 слайда -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class = "slider__control" data-slide = "prev">
+      <button class = "slider__control" data-slide ="next">
+    </div>
+
+  </div>
+<script type="text/javascript">(function(){window['__CF$cv$params']={r:'6d64557eed5b1630',m:'Q6CQEE32a07IxR9lX1kGY9FewM65tuMUJ0v_XGbWkaY-1643646724-0-ARf+fb10hc6D0YxQGxCQL7aghG3JeykVhOk9EOfjVRikGHOTtseQzfKyjlT2Hsl9/YeFJhllTf/iDw2AldCeYpMeoRV4zEH+bRAl3/kIEe4WrCd/3FT8pmEaKQaFMdUr6szP1jdl9nbL1wE4f1wGYE11XMxd9C/zdAZ14YltIprOBFOmmdXuVa6tQr53j9WT8wXXx7xhDAeLQVwt8TS1DT4=',s:[0x63f04cc986,0x02d1e20f48],}})();</script></body>
