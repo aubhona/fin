@@ -2,29 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="registration.js"></script>
 </head>
 <body>
-    <form action="action_page.php">
-        <div class="container">
-          <h1>Регистрация</h1>
-          <p>Заполните для регистрации.</p>
-          <hr>
-      
-          <label for="login"><b>Логин</b></label>
-          <input type="text" placeholder="Введите почту" name="login" required>
-      
-          <label for="psw"><b>Пароль</b></label>
-          <input type="password" placeholder="Введите пароль" name="psw" required>
-      
-          <label for="psw-repeat"><b>Повторите пароль</b></label>
-          <input type="password" placeholder="Повторите пароль" name="psw-repeat" required>
-          <hr>
-      
-          <button type="submit" class="registerbtn">Зарегистрироваться</button>
-        </div>
-      
-        <div class="container signin">
-          <p>Уже зарегестрированы? <a href="comein.html">Войти</a>.</p>
-        </div>
-      </form>
-</body>
+    <h1>Регистрация</h1>
+    <p>Вы решили стать клиентом СПЕРМОБАНКА. Придумайте пароль.</p>
+    <div class = "container">
+        <label><b>Пароль</b></label>
+    </div>
+    <input type="text" placeholder="Введите пароль">
+    <input onclick = "X()"id="button" type="submit" name="button" value="Далее"/>
+    
+        
+        

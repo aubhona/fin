@@ -1,7 +1,11 @@
-from init_db import initdb
+from backend.initdb import init
+from hashlib import md5
 
-db = initdb("sqlite:///site.db")
+config = open("config.txt", "r")
+key = config.readline()
+config.close()
 
+db, app = init("sqlite:///site.db", key)
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,10 +13,10 @@ class Users(db.Model):
     surname = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     login = db.Column(db.String, nullable=False)
-    password = db.Column(db.Integer, nullable=False)
+    password = db.Column(db.String, nullable=False)
 
     def __init__(self, name, surname, email, login, password) -> None:
-        self.name, self.surname, self.email, self.login, self.password = name, surname, email, login, hash(password)
+        self.name, self.surname, self.email, self.login, self.password = name, surname, email, login, md5(password.encode('utf8')).hexdigest()
 
     def __repr__(self) -> str:
         return f"{self.id}"

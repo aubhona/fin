@@ -1,8 +1,8 @@
+import matplotlib.pyplot as plt
+from time import time
+from query import *
 import numpy as np
 from sklearn.linear_model import LinearRegression
-
-from fin.backend.query import get_data
-
 
 def calculate_remaining_expenses_using_ema(uid, categories):
     data = get_data(uid, categories)
@@ -106,3 +106,62 @@ def calculate_remaining_expenses_using_linreg(uid, categories):
     pred = model2.predict(np.array([int(data_second_method_copy[-1][1])]).reshape((-1, 1)))
     for_next2 = pred[0]
     return (for_current1 + for_current2) / 2, (for_next2 + for_next1) / 2
+
+def create_diagram_1(uid=1, period=1):
+    data = get_stat(uid, period)
+    values = []
+    labels = []
+    width = 0.55
+    for item in data:
+        labels.append(item[0])
+        values.append(int(item[1]))
+
+    fig, ax = plt.subplots()
+
+    ax.bar(labels, values, width, label='Total', color="#696969")
+
+    ax.set_ylabel('Потрачено в общем')
+    ax.set_title('Расходы по категориям')
+    ax.set_facecolor("#C0C0C0")
+
+    path = "../static/img/{0}.png".format(str(uid) + "#diag1")
+    plt.savefig(path, facecolor="#FFE4E1")
+    # plt.show()
+
+
+def create_diagram_2(uid=1, period=1):
+    data = get_stat(uid, period)
+    sizes = []
+    labels = []
+    for item in data:
+        labels.append(item[0])
+        sizes.append(int(item[1]))
+    summ = sum(sizes)
+    explode = [0] * len(sizes)
+    for i in range(len(sizes)):
+        sizes[i] = (sizes[i] / summ) * 100
+    sorted_sizes = sorted(sizes)
+
+    for i in sorted_sizes:
+        index = sizes.index(i)
+        explode[index] = 0.8 * (i / 100) ** 2
+    explode[sizes.index(min(sizes))] = 0
+
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=80)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax1.set_title('Расходы по категориям')
+    path = "../static/img/{0}.png".format(str(uid) + "#diag2")
+    plt.savefig(path, facecolor="#FFE4E1")
+    # plt.show()
+
+def save_excel(uid, sdate, edate):
+    dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr = get_data_for_xlx(uid, sdate, edate)
+    list1 = pd.DataFrame({"Дата":dicex, "Категория": diccat, "Расход(в руб.)":dicexpr})
+    list2 = pd.DataFrame({"Дата":dicprof, "Доход(в руб.)": dicprofpr})
+    tab = {"Доходы":list2, "Расходы":list1}
+    writer = pd.ExcelWriter(f"../resources/{uid}#export_to_excel.xlsx", engine='xlsxwriter')
+    tab["Доходы"].to_excel(writer, sheet_name="Доходы", index=False)
+    tab["Расходы"].to_excel(writer, sheet_name="Расходы",index=False)
+    writer.save()
