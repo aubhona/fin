@@ -10,9 +10,10 @@ class Users(db.Model):
     email = db.Column(db.String, nullable=False)
     login = db.Column(db.String, nullable=False)
     password = db.Column(db.Integer, nullable=False)
+    balance = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, surname, email, login, password) -> None:
-        self.name, self.surname, self.email, self.login, self.password = name, surname, email, login, hash(password)
+    def __init__(self, name, surname, email, login, password, balance) -> None:
+        self.name, self.surname, self.email, self.login, self.password, self.balance = name, surname, email, login, hash(password), balance
 
     def __repr__(self) -> str:
         return f"{self.id}"
