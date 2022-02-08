@@ -22,3 +22,18 @@ def get_data(uid, cat):
         if expense.cat == cat:
             dic[expense.date[:7]] += expense.price
     return list(dic.items())
+
+
+def get_base_data(uid):
+    expenses = []
+    profits = []
+    balance = [int(Users.query.filter_by(id=uid).one().balance)]
+    for expense in Expenses.query.filter_by(user_id=uid).all():
+        expenses.append((int(expense.id), int(expense.price)))
+    for profit in Profits.query.filter_by(user_id=uid).all():
+        profits.append((int(profit.id), int(profit.price)))
+    # -------------------------------
+    base_operation_id = [(666, "+/-")]
+    # -------------------------------
+
+    return balance + expenses + profits + base_operation_id

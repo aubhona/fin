@@ -54,4 +54,4 @@ def create_diagram_2(uid=1, period=1):
     # plt.show()
 
 
-create_diagram_2(uid=4, period=12)
+create_diagram_2(uid=4, period=10000)
