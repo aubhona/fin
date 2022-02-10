@@ -1,4 +1,3 @@
-from itsdangerous import json
 from backend.models import app
 from flask import jsonify, render_template, request
 
@@ -11,7 +10,8 @@ def firsr_page():
     b = ""
     if request.method == "POST":
         login = request.form.get("login")
-        b = 1
+        if login == "123":
+            b = 1
     return render_template("first_page.html", bl = b)
 
 @app.route("/history.html")

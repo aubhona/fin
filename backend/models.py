@@ -1,9 +1,9 @@
 from backend.initdb import init
 from hashlib import md5
 
-config = open("config.txt", "r")
-key = config.readline()
-config.close()
+#config = open("config.txt", "r")
+key = "12345"
+#config.close()
 
 db, app = init("sqlite:///site.db", key)
 

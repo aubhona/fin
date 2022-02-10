@@ -1,0 +1,13 @@
+.slide p,
+.slide div,
+.slide [type="checkbox"]{
+    display:none;
+}
+ 
+.slide [type="checkbox"]:checked ~ p {
+    display:block;
+}
+
+.slide [type="checkbox"]:checked ~ div {
+    display:block;
+}
