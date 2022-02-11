@@ -41,3 +41,18 @@ def get_data_for_xlx(uid, sdate, edate): #date format: YYYY-mm-dd
             dicprof.append(date)
             dicprofpr.append(expense.price)
     return dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr
+
+
+def get_base_data(uid):
+    expenses = []
+    profits = []
+    balance = [int(Users.query.filter_by(id=uid).one().balance)]
+    for expense in Expenses.query.filter_by(user_id=uid).all():
+        expenses.append((int(expense.id), int(expense.price)))
+    for profit in Profits.query.filter_by(user_id=uid).all():
+        profits.append((int(profit.id), int(profit.price)))
+    # -------------------------------
+    base_operation_id = [(666, "+/-")]
+    # -------------------------------
+
+    return balance + expenses + profits + base_operation_id

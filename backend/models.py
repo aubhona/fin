@@ -11,7 +11,6 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False)
     login = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
 
@@ -49,3 +48,5 @@ class Expenses(db.Model):
 
     def __repr__(self) -> str:
         return f"{self.id}"
+
+db.create_all()
