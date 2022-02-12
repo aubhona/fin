@@ -1,4 +1,3 @@
-from crypt import methods
 from unicodedata import name
 from app import app
 from flask import flash, make_response, redirect, render_template, request, session, url_for
