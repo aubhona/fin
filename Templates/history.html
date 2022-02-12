@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/sdvig.css" rel="stylesheet">
     <link href="../static/css/men.css" rel="stylesheet">
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="../bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
 
     <input type="checkbox" id="nav-toggle" hidden>
     <nav class="nav">
         <label for="nav-toggle" class="nav-toggle" onclick></label>
         <ul>
             <li><a href="add.html">Добавить операцию</a></li>
-            <li><a href="diagram.html">Диаграмма расходов</a></li> 
+            <li><a href="diagram.html">Диаграмма расходов</a></li>
             <li><a href="history.html">История трат</a></li>
             <li><a href="head.html">Вернуться на главную страницу</a></li>
             <li>Выйти</li>
@@ -35,25 +35,25 @@
                         Фильтр
                     </label>
                     <input type="checkbox" id="filt">
-                    <div>
+                    <div style="width: 30%">
                         <form action="action_page.php">
 
                             <label for="time"><b>За какое время</b></label>
-                            <select name="time" size="1">
-                                <option>Неделя</option>
-                                <option>Месяц</option>
-                                <option>3 Месяца</option>
-                            </select>
+                                <select name="time" class="form-select">
+                                    <option>Неделя</option>
+                                    <option>Месяц</option>
+                                    <option>3 Месяца</option>
+                                </select>
                             <br>
 
                             <label for="kol"><b>Выберите количество операций</b></label>
                             <br>
-                            <input name="kol" type="range" min="0" max="100" step="1" value="50"> 
+                            <input name="kol" type="range" min="0" max="100" step="1" value="50">
                             <br>
 
                             <label for="sum"><b>Выберите мин и макс денег</b></label>
                             <br>
-                            <input name="sum" type="range" min="-10000000000000000" max="10000000000000000" step="10" multiple> 
+                            <input name="sum" type="range" min="-10000000000000000" max="10000000000000000" step="10" multiple>
                             <br>
 
                             <input class="btn btn-primary btn-sm" type="submit" value="Подтвердить">
