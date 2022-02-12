@@ -1,5 +1,3 @@
-from crypt import methods
-from unicodedata import name
 from app import app
 from flask import flash, make_response, redirect, render_template, request, session, url_for
 from service import *
@@ -26,7 +24,10 @@ def login():
 @app.route("/head", methods = ["GET", "POST"])
 def head():
     if session.get("id"):
-        response = make_response(render_template("head.html"))
+        last_oper = ls_op(session["id"])
+        max_pr_cat, max_pr, pop_cat = oper(session["id"])
+        img = f"{session['id']}-diag2.png"
+        response = make_response(render_template("head.html", img = img, last_oper = last_oper, max_pr_cat = max_pr_cat, max_pr = max_pr, pop_cat = pop_cat))
         response.set_cookie("", "", expires=datetime.now()+timedelta(hours=2))
         return response
     else:
@@ -34,9 +35,7 @@ def head():
 
 @app.route("/registration", methods = ["GET", "POST"])
 def reg():
-    print("124124")
     if request.method == "POST":
-        print("asasgsagasgas")
         login = request.form.get("login")
         name = request.form.get("name")
         surname = request.form.get("surname")

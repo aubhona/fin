@@ -2,8 +2,6 @@ from backend.models import *
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-
-
 def get_stat(uid, per): #date format: YYYY-mm-dd
     dic = defaultdict(int)
     date = datetime.date(datetime.today() - timedelta(weeks=4 * per))
@@ -61,7 +59,7 @@ def is_in_db(login, password):
     try:
         user = Users.query.filter_by(login = login).one()
         return user.password == md5(password.encode('utf8')).hexdigest(), user.id, user.name
-    except:
+    except Exception as e:
         return False, None, None
 
 def regis(login, password, name, surname):
@@ -69,3 +67,66 @@ def regis(login, password, name, surname):
     db.session.add(user)
     db.session.commit()
     return user.id
+
+def las(uid):
+    date = None
+    cat = None
+    pr = None
+    try:
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            date_cur = datetime.date(datetime.strptime(expense.date, "%Y-%m-%d"))
+            if date is None:
+                date = date_cur
+                cat = expense.cat
+                pr = expense.price
+            else:
+                if date_cur>=date:
+                    date = date_cur
+                    cat = expense.cat
+                    pr = expense.price
+        if date is None:
+            raise "There is not operation"
+        return cat, pr
+    except Exception as e:
+        return "There is not operation", None
+
+def all_op(uid):
+    date_month = datetime.date(datetime.today() - timedelta(weeks=4))
+    date_month = date_month.strftime("%m")
+    dic = {}
+    cat = None
+    price = None
+    try:
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            date_cur = datetime.date(datetime.strptime(expense.date, "%Y-%m-%d"))
+            if date_cur.strftime("%m") == date_month:
+                if expense.cat in dic:
+                    dic[expense.cat][0] += expense.price
+                    dic[expense.cat][1] +=1
+                else:
+                    dic[expense.cat] = [expense.price, 1]
+                if cat is None:
+                    cat = expense.cat
+                    price = expense.price
+                else:
+                    if price<expense.price:
+                        cat = expense.cat
+                        price = expense.price
+        if cat is None:
+            raise "There is not operation"
+        max_cat = float("-inf")
+        max_cat_pr = float("-inf")
+        pop_cat = float("-inf")
+        pop_cat_count = float("-inf")
+        for i in dic:
+            if dic[i][0]>max_cat_pr:
+                max_cat_pr = dic[i][0]
+                max_cat = i
+            if dic[i][1]>pop_cat_count:
+                pop_cat_count = dic[i][1]
+                pop_cat = i
+        return price, cat, pop_cat, pop_cat_count, max_cat, max_cat_pr
+    except Exception as e:
+        return "There is not operation", None, None, None, None, None
+
+

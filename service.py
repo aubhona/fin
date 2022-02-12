@@ -125,7 +125,7 @@ def create_diagram_1(uid=1, period=1):
     ax.set_title('Расходы по категориям')
     ax.set_facecolor("#C0C0C0")
 
-    path = "../static/img/{0}.png".format(str(uid) + "#diag1")
+    path = "../static/img/{0}.png".format(str(uid) + "-diag1")
     plt.savefig(path, facecolor="#FFE4E1")
     # plt.show()
 
@@ -153,7 +153,7 @@ def create_diagram_2(uid=1, period=1):
             shadow=True, startangle=80)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     ax1.set_title('Расходы по категориям')
-    path = "../static/img/{0}.png".format(str(uid) + "#diag2")
+    path = "../static/img/{0}.png".format(str(uid) + "-diag2")
     plt.savefig(path, facecolor="#FFE4E1")
     # plt.show()
 
@@ -191,3 +191,18 @@ def log_reg(login, password, code, name = None, surname = None):
     else:
         uid = regis(login, password, name, surname)
         return uid
+
+def ls_op(uid):
+    cat, pr = las(uid)
+    if cat == "There is not operation":
+        return "Вы не совершали расходы."
+    return f"{cat.lower()} - {pr} рублей."
+
+def oper(uid):
+    price, cat, pop_cat, pop_cat_count, max_cat, max_cat_pr = all_op(uid)
+    if price=="There is not operation":
+        return "Вы не совершали расходы.", "Вы не совершали расходы.", "Вы не совершали расходы."
+    max_pr = f" {price} рублей на категорию: {cat.lower()}."
+    pop_cat = f"категорию {pop_cat.lower()}, Вы совершали расходы по этой категории {pop_cat_count} раз."
+    max_cat = f"категорию {max_cat.lower()}, в сумме Вы потратили {max_cat_pr} рублей на эту категорию."
+    return max_cat, max_pr, pop_cat
