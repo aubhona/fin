@@ -182,5 +182,12 @@ def calculate_operations_relatively_base(user_id):
     recalculated_balance = [int(data[0]) / base_operation]
     return recalculated_balance + recalculated_expenses + recalculated_profits
 
-def log(login, password):
-    return is_in_db(login, password)
+def log_reg(login, password, code, name = None, surname = None):
+    if code == 1:
+        return is_in_db(login, password)
+    elif code == 2:
+        is_in, _, _ = is_in_db(login, "")
+        return is_in
+    else:
+        uid = regis(login, password, name, surname)
+        return uid

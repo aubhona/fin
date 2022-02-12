@@ -1,4 +1,3 @@
-from sqlalchemy import false
 from backend.models import *
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -64,3 +63,9 @@ def is_in_db(login, password):
         return user.password == md5(password.encode('utf8')).hexdigest(), user.id, user.name
     except:
         return False, None, None
+
+def regis(login, password, name, surname):
+    user = Users(name, surname, login, password)
+    db.session.add(user)
+    db.session.commit()
+    return user.id

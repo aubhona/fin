@@ -8,8 +8,8 @@ class Users(db.Model):
     login = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
 
-    def __init__(self, name, surname, email, login, password) -> None:
-        self.name, self.surname, self.email, self.login, self.password = name, surname, email, login, md5(password.encode('utf8')).hexdigest()
+    def __init__(self, name, surname, login, password) -> None:
+        self.name, self.surname, self.login, self.password = name, surname, login, md5(password.encode('utf8')).hexdigest()
 
     def __repr__(self) -> str:
         return f"{self.id}"
@@ -42,3 +42,5 @@ class Expenses(db.Model):
 
     def __repr__(self) -> str:
         return f"{self.id}"
+
+#db.create_all()
