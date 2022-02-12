@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 
 
-def get_stat(uid, per):
+def get_stat(uid, per) -> list[str, int]:
     dic = defaultdict(int)
     date = datetime.date(datetime.today() - timedelta(weeks=4 * per))
     for expense in Expenses.query.filter_by(user_id=uid).all():
@@ -13,7 +13,7 @@ def get_stat(uid, per):
     return list(dic.items())
 
 
-def get_data(uid, cat):
+def get_data(uid, cat) -> list[str, int]:
     dic = defaultdict(int)
     months = set()
     for expense in Expenses.query.filter_by(user_id=uid).all():
@@ -24,10 +24,10 @@ def get_data(uid, cat):
     return list(dic.items())
 
 
-def get_base_data(uid):
+def get_base_data(uid) -> list[float, int]:
     expenses = []
     profits = []
-    balance = [int(Users.query.filter_by(id=uid).one().balance)]
+    balance = [get_balance(uid=uid)]
     for expense in Expenses.query.filter_by(user_id=uid).all():
         expenses.append((int(expense.id), int(expense.price)))
     for profit in Profits.query.filter_by(user_id=uid).all():
@@ -37,3 +37,8 @@ def get_base_data(uid):
     # -------------------------------
 
     return balance + expenses + profits + base_operation_id
+
+
+def get_balance(uid) -> float:
+    balance = float(Users.query.filter_by(id=uid).one().balance)
+    return balance
