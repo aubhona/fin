@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +7,7 @@
     <link href="{{ url_for('static', filename = 'css/men.css')}}" rel="stylesheet">
 </head>
 <body>
-    {% block content %}
+
     <script src="{{ url_for('static', filename = 'bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js')}}"></script>
 
     <input type="checkbox" id="nav-toggle" hidden>
@@ -50,5 +50,4 @@
                 </ul>
                 <hr>
             </section>
-            {% endblock %}
 </body>
