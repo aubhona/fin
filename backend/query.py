@@ -1,7 +1,7 @@
-from models import *
+from backend.models import *
 from datetime import datetime, timedelta
 from collections import defaultdict
-import pandas as pd
+
 
 
 def get_stat(uid, per):  # date format: YYYY-mm-dd
@@ -44,3 +44,31 @@ def get_data_for_xlx(uid, sdate, edate):  # date format: YYYY-mm-dd
             dicprof.append(date)
             dicprofpr.append(expense.price)
     return dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr
+
+
+def get_base_data(uid):
+    expenses = []
+    profits = []
+    balance = [int(Users.query.filter_by(id=uid).one().balance)]
+    for expense in Expenses.query.filter_by(user_id=uid).all():
+        expenses.append((int(expense.id), int(expense.price)))
+    for profit in Profits.query.filter_by(user_id=uid).all():
+        profits.append((int(profit.id), int(profit.price)))
+    # -------------------------------
+    base_operation_id = [(666, "+/-")]
+    # -------------------------------
+
+    return balance + expenses + profits + base_operation_id
+
+def is_in_db(login, password):
+    try:
+        user = Users.query.filter_by(login = login).one()
+        return user.password == md5(password.encode('utf8')).hexdigest(), user.id, user.name
+    except:
+        return False, None, None
+
+def regis(login, password, name, surname):
+    user = Users(name, surname, login, password)
+    db.session.add(user)
+    db.session.commit()
+    return user.id
