@@ -1,23 +1,34 @@
-from backend.models import app
-from flask import jsonify, render_template, request
-
+from crypt import methods
+from app import app
+from flask import flash, make_response, redirect, render_template, request, session, url_for
+from backend.service import *
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/first_page.html", methods = ["GET", "POST"])
-def firsr_page():
-    b = ""
+@app.route("/login", methods = ["GET", "POST"])
+def login():
     if request.method == "POST":
         login = request.form.get("login")
-        if login == "123":
-            b = 1
-    return render_template("first_page.html", bl = b)
+        password = request.form.get("password")
+        is_in, uid, name = log(login, password)
+        if is_in:
+            session["id"] = uid
+            flash(f"Добро пожаловать, {name}!", "success")
+            return redirect(url_for("head"))
+        else:
+            flash("Неправильный пароль или логин.", "warning")
+            print("Asfasfasgasgagagasgasgasgasgsdagmmsdgmsdgmmsgdmsadgmsadgmmdgs")
+    return render_template("login.html")
 
-@app.route("/history.html")
-def f():
-    print(235)
-    return render_template("history.html")
+@app.route("/head", methods = ["GET", "POST"])
+def head():
+    if "id" in session:
+        response = make_response(render_template("head.html"))
+        response.set_cookie(expires=datetime.now()+timedelta(hours=2))
+        return response
+    else:
+        return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug = True)

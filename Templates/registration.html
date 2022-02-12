@@ -6,12 +6,13 @@
 </head>
 <body>
     <h1>Регистрация</h1>
-    <p>Вы решили стать клиентом СПЕРМОБАНКА. Придумайте пароль.</p>
-    <div class = "container">
-        <label><b>Пароль</b></label>
-    </div>
-    <input type="text" placeholder="Введите пароль">
-    <input onclick = "X()"id="button" type="submit" name="button" value="Далее"/>
-    
-        
-        
+    <form method="post">
+        <legend>Придумайте логин и пароль и заполните, чтобы зарегистрироваться.</legend>
+        <label for="email"><b>Логин</b></label>
+        <input id = 'login' type="text" name = "login" placeholder="Придумайте логин">
+        <label for="email"><b>Пароль</b></label>
+        <input type="text" placeholder="Придумайте пароль" name="password1">
+        <input type="text" placeholder="Повторите пароль" name="password2">
+        <input type="submit" name="log" value="Зарегистрироваться"/>
+        <h2 style = "color: red; visibility: hidden">Пароли не совпадают.</h2>
+    </form>

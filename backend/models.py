@@ -1,17 +1,10 @@
-from backend.initdb import init
+from app import db
 from hashlib import md5
-
-#config = open("config.txt", "r")
-key = "12345"
-#config.close()
-
-db, app = init("sqlite:///site.db", key)
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False)
     login = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
 
