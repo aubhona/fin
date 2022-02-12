@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-=======
-from unicodedata import name
->>>>>>> b964fed98d1fba1bbb14bce0e3e6d9f3032699c0
 from app import app
 from flask import flash, make_response, redirect, render_template, request, session, url_for
 from service import *
-#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
 
 @app.route("/")
 def index():
@@ -22,7 +18,7 @@ def login():
             flash(f"Добро пожаловать, {name}!", "success")
             return redirect(url_for("head"))
         else:
-            flash("Неправильный пароль или логин.", "warning")
+            flash("Неправильный пароль или логин.", "danger")
     return render_template("login.html")
 
 @app.route("/head", methods = ["GET", "POST"])
@@ -46,10 +42,10 @@ def reg():
         password = request.form.get("password")
         password_rep = request.form.get("password_rep")
         is_in = log_reg(login, None, 2)
-        if is_in:
-            flash("Такой логин уже используется. Придумайте другой.", "danger")
+        if is_in[0]:
+            flash("Такой логин уже используется. Придумайте другой.", "warning")
         elif password != password_rep:
-            flash("Пароли не совпадают.", "danger")
+            flash("Пароли не совпадают.", "warning")
         else:
             uid = log_reg(login, password, 3, name = name, surname = surname)
             session["id"] = uid

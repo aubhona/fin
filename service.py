@@ -184,13 +184,11 @@ def calculate_operations_relatively_base(user_id):
 
 def log_reg(login, password, code, name = None, surname = None):
     if code == 1:
-        return is_in_db(login, password)
+        return is_in_db(login, password, 1)
     elif code == 2:
-        is_in, _, _ = is_in_db(login, "")
-        return is_in
+        return is_in_db(login, "", 2)
     else:
-        uid = regis(login, password, name, surname)
-        return uid
+        return regis(login, password, name, surname)
 
 def ls_op(uid):
     cat, pr = las(uid)
