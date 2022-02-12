@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+from unicodedata import name
+>>>>>>> b964fed98d1fba1bbb14bce0e3e6d9f3032699c0
 from app import app
 from flask import flash, make_response, redirect, render_template, request, session, url_for
 from service import *
