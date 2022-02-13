@@ -3,10 +3,14 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 
 def get_stat(uid, per): #date format: YYYY-mm-dd
+    if per is None:
+        date = datetime.now().strftime("%Y-%m")+"-01"
+        date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
+    else:
+        date = datetime.date(datetime.today() - timedelta(weeks=per))
     dic = defaultdict(int)
-    date = datetime.date(datetime.today() - timedelta(weeks=4 * per))
     for expense in Expenses.query.filter_by(user_id=uid).all():
-        if datetime.date() >= date:
+        if datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) >= date:
             dic[expense.cat] += expense.price
     return list(dic.items())  # [(cat1, price1), (cat2, price2)]
 
@@ -23,8 +27,7 @@ def get_data(uid, cat):  # date format: YYYY-mm-dd
 
 
 def get_data_for_xlx(uid, sdate, edate):  # date format: YYYY-mm-dd
-    sdate, edate = datetime.date(datetime.strptime(sdate, "%Y-%m-%d")), datetime.date(
-        datetime.strptime(edate, "%Y-%m-%d"))
+    sdate, edate = datetime.date(datetime.strptime(sdate, "%Y-%m-%d")), datetime.date(datetime.strptime(edate, "%Y-%m-%d"))
     dicex = []
     dicprof = []
     diccat = []
@@ -62,17 +65,23 @@ def is_in_db(login, password, code):
     try:
         user = Users.query.filter_by(login = login).one()
         if code == 1:
-            return user.password == md5(password.encode('utf8')).hexdigest(), user.id, user.name
+            return user.password == md5(password.encode('utf8')).hexdigest(), user.id, user.name, user.surname
         else:
             return True, None, None
     except Exception as e:
         return False, None, None
 
-def regis(login, password, name, surname):
-    user = Users(name, surname, login, password)
-    db.session.add(user)
-    db.session.commit()
-    return user.id
+def regis(login, password, name = None, surname = None, code = 0):
+    if code == 1:
+        user = Users(name, surname, login, password)
+        db.session.add(user)
+        db.session.commit()
+        return user.id
+    else:
+        user = Users.query.filter_by(login = login).one()
+        user.password = md5(password.encode('utf8')).hexdigest()
+        db.session.add(user)
+        db.session.commit()
 
 def las(uid):
     date = None
@@ -135,4 +144,20 @@ def all_op(uid):
     except Exception as e:
         return "There is not operation", None, None, None, None, None
 
+def db_add_exp(uid, price, date, cat):
+    cat = Expenses(uid, price, date, cat)
+    db.session.add(cat)
+    db.session.commit()
 
+def db_add_prof(uid, price, date):
+    prof = Profits(uid, price, date)
+    db.session.add(prof)
+    db.session.commit()
+
+def get_db_expences(uid, per):
+    date = datetime.date(datetime.today() - timedelta(weeks = per))
+    oper = []
+    for expense in Expenses.query.filter_by(user_id=uid).all():
+        if datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) >= date:
+            oper.append((expense.date, expense.cat, expense.price))
+    return oper

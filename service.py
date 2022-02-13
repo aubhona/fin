@@ -1,9 +1,12 @@
+import matplotlib
 import matplotlib.pyplot as plt
 from time import time
 from backend.query import *
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import pandas as pd
+
+matplotlib.use('Agg')
 
 def calculate_remaining_expenses_using_ema(uid, categories):
     data = get_data(uid, categories)
@@ -125,9 +128,10 @@ def create_diagram_1(uid=1, period=1):
     ax.set_title('Расходы по категориям')
     ax.set_facecolor("#C0C0C0")
 
-    path = "../static/img/{0}.png".format(str(uid) + "-diag1")
+    path = "static/img/{0}.png".format(str(uid) + "-diag1")
     plt.savefig(path, facecolor="#FFE4E1")
     # plt.show()
+    return "{0}.png".format(str(uid) + "-diag1")
 
 
 def create_diagram_2(uid=1, period=1):
@@ -153,19 +157,21 @@ def create_diagram_2(uid=1, period=1):
             shadow=True, startangle=80)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     ax1.set_title('Расходы по категориям')
-    path = "../static/img/{0}.png".format(str(uid) + "-diag2")
+    path = "static/img/{0}.png".format(str(uid) + "-diag2")
     plt.savefig(path, facecolor="#FFE4E1")
     # plt.show()
+    return "{0}.png".format(str(uid) + "-diag2")
 
 def save_excel(uid, sdate, edate):
     dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr = get_data_for_xlx(uid, sdate, edate)
     list1 = pd.DataFrame({"Дата":dicex, "Категория": diccat, "Расход(в руб.)":dicexpr})
     list2 = pd.DataFrame({"Дата":dicprof, "Доход(в руб.)": dicprofpr})
     tab = {"Доходы":list2, "Расходы":list1}
-    writer = pd.ExcelWriter(f"../resources/{uid}#export_to_excel.xlsx", engine='xlsxwriter')
+    writer = pd.ExcelWriter(f"static/resources/{uid}-export_to_excel.xlsx", engine='xlsxwriter')
     tab["Доходы"].to_excel(writer, sheet_name="Доходы", index=False)
     tab["Расходы"].to_excel(writer, sheet_name="Расходы",index=False)
     writer.save()
+    return f"{uid}-export_to_excel.xlsx"
 
 def calculate_operations_relatively_base(user_id):
     data = list(get_base_data(user_id))
@@ -187,8 +193,10 @@ def log_reg(login, password, code, name = None, surname = None):
         return is_in_db(login, password, 1)
     elif code == 2:
         return is_in_db(login, "", 2)
+    elif code == 3:
+        return regis(login, password, name = name, surname = surname, code = 1)
     else:
-        return regis(login, password, name, surname)
+        regis(login, password, code = 2)
 
 def ls_op(uid):
     cat, pr = las(uid)
@@ -204,3 +212,12 @@ def oper(uid):
     pop_cat = f"категорию {pop_cat.lower()}, Вы совершали расходы по этой категории {pop_cat_count} раз."
     max_cat = f"категорию {max_cat.lower()}, в сумме Вы потратили {max_cat_pr} рублей на эту категорию."
     return max_cat, max_pr, pop_cat
+
+def oper_add(uid, price, date, cat = None):
+    if cat is None:
+        db_add_prof(uid, price, date)
+    else:
+        db_add_exp(uid, price, date, cat)
+
+def get_expences(uid, per):
+    return get_db_expences(uid, per)

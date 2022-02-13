@@ -43,4 +43,4 @@ class Expenses(db.Model):
     def __repr__(self) -> str:
         return f"{self.id}"
 
-#db.create_all()
+db.create_all()
