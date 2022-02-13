@@ -22,7 +22,7 @@
     -moz-transition: left 0.3s;
     transition: left 0.3s;
     /* определяем цвет фона панели */
-    background: #16a085;
+    background: #1872fac7;
     /* поверх других элементов */
     z-index: 2000;
 }
@@ -338,7 +338,7 @@ body {
     bottom: 0;
     height: 1px;
     width: 100%;
-    background: #3bc1a0;
+    background: #1872fac7;
     -webkit-transition: width .5s ease;
     transition: width .5s ease;
 }
@@ -350,7 +350,7 @@ body {
  
 .nav > ul > li > a:hover:before {
     width: 0%;
-    background: #3bc1a0;
+    background: #1872fac7;
     -webkit-transition: width .5s ease;
     transition: width .5s ease;
 }

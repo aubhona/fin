@@ -1,39 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
 
 <head>
-    <link href="../bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+    <link href="{{ url_for('static', filename='bootstrap-5.1.3-dist/css/bootstrap.min.css')}}" rel="stylesheet">
+    <script src="{{ url_for('static', filename = 'bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js')}}"></script>
+    <link href="{{ url_for('static', filename = 'css/men.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename = 'css/sdvig.css')}}" rel="stylesheet">
     <meta charset="UTF-8">
-    <title>Главная</title>
 </head>
 
-<body>
-    <div class="container">
-        <header class="header-footer">
-            <img src="../static/img/logo.png" alt="logo" style="border-radius: 40px; margin-top:3%; margin-bottom: 5%">
-        </header>
+<body style="margin: 0; min-height: 100%; display: grid; grid-template-rows: auto 1fr auto">
+
+            
+    <header></header>
+    <main>
+        <img src="{{ url_for('static', filename = 'img/logo.png')}}" alt="logo" style="border-radius: 40px; margin-top:2%; margin-bottom: 1%; margin-right: 15%; float: right;">
+            <script type="text/javascript"> var css_file=document.createElement("link");
+                    css_file.setAttribute("rel","stylesheet");
+                    css_file.setAttribute("type","text/css");
+                    css_file.setAttribute("href","https://s.bookcdn.com//css/cl/bw-cl-c22.css?v=0.0.1");
+                    document.getElementsByTagName("head")[0].appendChild(css_file);
+                </script>
+            <div id="tw_22_1660705103" style="float: right; position: absolute; padding-left:88%">
+                <div style="width:200px; height:px; margin: auto">
+                    <a href="https://nochi.com/time/moscow-18171">Москва</a>
+                    <br/>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function setWidgetData_1660705103(data){
+                    if(typeof(data) != 'undefined' && data.results.length > 0) {
+                        for(var i = 0; i < data.results.length; ++i) {
+                            var objMainBlock = '';
+                            var params = data.results[i];
+                            objMainBlock = document.getElementById('tw_'+params.widget_type+'_'+params.widget_id);
+                            if(objMainBlock !== null) objMainBlock.innerHTML = params.html_code;
+                    } } }
+                    var clock_timer_1660705103 = -1;
+                    widgetSrc = "https://widgets.booked.net/time/info?ver=2;domid=589;type=22;id=1660705103;scode=2;city_id=18171;wlangid=20;mode=0;details=0;background=ffffff;border_color=ffffff;color=686868;add_background=ffffff;add_color=333333;head_color=ffffff;border=0;transparent=0";
+                    var widgetUrl = location.href;
+                    widgetSrc += '&ref=' + widgetUrl;
+                    var wstrackId = "";
+                    if (wstrackId) { widgetSrc += ';wstrackId=' + wstrackId + ';' }
+                    var timeBookedScript = document.createElement("script");
+                    timeBookedScript.setAttribute("type", "text/javascript");
+                    timeBookedScript.src = widgetSrc;
+                    document.body.appendChild(timeBookedScript);
+            </script>
+        <div style="margin-top:3%;">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for cat, message in messages %}
-                <div class="alert alert-{{cat}} alert-dismissible fade show" role="alert">
-                    {{message}}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
+            {% for cat, message in messages %}
+            <div class="alert alert-{{cat}} alert-dismissible fade show" role="alert">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
             {% endif %}
             {% endwith %}
-        {% block content %} {% endblock %}
-        <footer class="header-footer footer">
-            <ul>
-                <li class="menu-item">&copy;&nbsp;Наш интернет-магазин</li>
-                <li class="menu-item"><a href="mailto:email@mail.ru" class="menu-link">email@mail.ru</a></li>
+            {% block content %} {% endblock %}
+        </div>
+    </main>
+    <footer style="display: flex; background-color: #ffffff; float: bottom;">
+        <div style="display: flex; margin-left: 79%; margin-bottom: 1%;">
+        <ul style="display: none;">
+            <li class="menu-item"></li>
+            <li class="menu-item" style="font-size: 13px">All rights reserved</li>
+            <li class="menu-item"><a href="mailto:email@mail.ru" class="menu-link"></a></li>
+        </ul>
+            <a href="mailto:aubhon.@gmail.com" style="padding-right: 5px;">aubhon.a@gmail.com</a>       &copy;&nbsp;2022 CTRL-fin Inc
+        <div>
+            <h5 style="padding-left: 40px; display: none;">
+                Follow us on:
+            </h5>
+            <ul style="padding-left: 40px; display: none;">
+                <li style="display: inline; margin-right: 50px"><a href="vk.com" class="menu-link" style="text-decoration: none; color: #009900; font-size: 23px; font-weight: bold">vk</a></li>
+                <li style="display: inline; margin-right: 50px"><a href="facebook.com" class="menu-link" style="text-decoration: none; color: #009900; font-size: 23px; font-weight: bold">facebook</a></li>
+                <li style="display: inline; margin-right: 50px"><a href="mail.ru" class="menu-link" style="text-decoration: none; color: #009900; font-size: 23px; font-weight: bold">mail.ru</a></li>
+                <li style="display: inline; margin-right: 50px"><a href="instagram.com" class="menu-link" style="text-decoration: none; color: #009900; font-size: 23px; font-weight: bold">instagram</a></li>
+                <li style="display: inline; margin-right: 50px"><a href="github.com" class="menu-link" style="text-decoration: none; color: #009900; font-size: 23px; font-weight: bold">github</a></li>
             </ul>
-        </footer>
-        <div class="help"><a href="https://sdo.1580.ru" class="q-link">
-                <p class="q" style="margin:0">&nbsp?</p>
-            </a></div>
-    </div>
+        </div>
+        </div>
+    </footer>
 </body>
-
 </html>

@@ -35,9 +35,10 @@ def head():
             session["expences"] = True
         max_pr_cat, max_pr, pop_cat = oper(session["id"])
         img = f"{session['id']}-diag2.png"
-        if ("date" not in session) and (session["expences"] == True):
-            session["date"] = datetime.now().strftime("%Y-%m")
-            img = create_diagram_2(session["id"], None)
+        if ("date" not in session):
+            if (session["expences"] == True):
+                session["date"] = datetime.now().strftime("%Y-%m")
+                img = create_diagram_2(session["id"], None)
         elif (session["date"] != datetime.now().strftime("%Y-%m")) and (session["expences"] == True):
             session["date"] = datetime.now().strftime("%Y-%m")
             img = create_diagram_2(session["id"], None)

@@ -69,7 +69,7 @@ def is_in_db(login, password, code):
         else:
             return True, None, None
     except Exception as e:
-        return False, None, None
+        return False, None, None, None
 
 def regis(login, password, name = None, surname = None, code = 0):
     if code == 1:
