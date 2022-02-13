@@ -65,9 +65,11 @@
                     <input class="btn btn-primary btn-sm" type="submit" value="Скачать excel вариант">
                 </a>
                 <hr>
-                {% for ab, bc, ed in oper %}
+                {% for date, cat, price in oper %}
                 <div>
-                    {{ab}} - {{bc}} - {{ed}}
+                    <ul>
+                    <li>{{date}} - {{cat}} - {{price}}</li>
+                    </ul>
                 </div>
                 {% endfor %}
             </section>

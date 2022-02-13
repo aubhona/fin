@@ -224,7 +224,7 @@ def oper_add(uid, price, date, cat = None):
 def get_expences(uid, per):
     return get_db_expences(uid, per)
 
-def recalculate_balance(uid, period) -> float:
+def recalculate_balance(uid, period):
     # PV = get_balance(uid=uid)
     PV = 100
 

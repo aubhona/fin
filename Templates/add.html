@@ -42,7 +42,7 @@
 
                     <div style="width: 30%">
                         <select class="form-select" name="type" size="1" id="oper" required style="margin-bottom: 1%">
-                            <option selected value="">Выберите тип операции</option>
+                            <option selected value="=">Выберите тип операции</option>
                             <option value="+">Прибыль</option>
                             <option value="-">Расходы</option>
                         </select>
@@ -75,6 +75,8 @@
             document.getElementById("cat").style.display = "block"
         } else if (strUser === "+"){
             document.getElementById("cat").options[0].selected = true;
+            document.getElementById("cat").style.display = "none";
+        } else if (strUser === "="){
             document.getElementById("cat").style.display = "none";
         }
 			})

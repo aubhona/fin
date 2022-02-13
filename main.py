@@ -94,8 +94,11 @@ def add():
             oper_add(session["id"], price, date)
         else:
             cat = request.form.get("cat")
-            oper_add(session["id"], price, date, cat = cat)
-            flash(f"Успешно добавлено.", "success")
+            if cat:
+                oper_add(session["id"], price, date, cat = cat)
+                flash("Успешно добавлено.", "success")
+            else:
+                flash("Выберите категорию траты", "warning")
             session["expences"] = True
     return render_template("add.html")
 
