@@ -47,7 +47,7 @@ def get_data_for_xlx(uid, sdate, edate):  # date format: YYYY-mm-dd
     return dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr
 
 
-def get_base_data(uid):
+def get_base_data(uid, op_id, typ):
     expenses = []
     profits = []
     balance = [int(Users.query.filter_by(id=uid).one().balance)]
@@ -55,9 +55,8 @@ def get_base_data(uid):
         expenses.append((int(expense.id), int(expense.price)))
     for profit in Profits.query.filter_by(user_id=uid).all():
         profits.append((int(profit.id), int(profit.price)))
-    # -------------------------------
-    base_operation_id = [(666, "+/-")]
-    # -------------------------------
+
+    base_operation_id = [(op_id, typ)]
 
     return balance + expenses + profits + base_operation_id
 
@@ -161,3 +160,11 @@ def get_db_expences(uid, per):
         if datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) >= date:
             oper.append((expense.date, expense.cat, expense.price))
     return oper
+
+def get_balance(uid, code):
+    if code == 1:
+        return Users().query.filter_by(id=uid).one().balance_prof
+    if code == 2:
+        return Users().query.filter_by(id=uid).one().balance_exp
+    if code == 3:
+        return Users().query.filter_by(id=uid).one().balance_tot

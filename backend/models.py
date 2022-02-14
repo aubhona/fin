@@ -7,9 +7,15 @@ class Users(db.Model):
     surname = db.Column(db.String, nullable=False)
     login = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
+    balance_exp = db.Column(db.Float, nullable=False)
+    balance_prof = db.Column(db.Float, nullable=False)
+    balance_tot = db.Column(db.Float, nullable=False)
 
     def __init__(self, name, surname, login, password) -> None:
         self.name, self.surname, self.login, self.password = name, surname, login, md5(password.encode('utf8')).hexdigest()
+        self.balance_exp = 0
+        self.balance_prof = 0
+        self.balance_tot = 0
 
     def __repr__(self) -> str:
         return f"{self.id}"
@@ -24,6 +30,8 @@ class Profits(db.Model):
 
     def __init__(self, user_id, price, date) -> None:
         self.user_id, self.price, self.date = user_id, price, date
+        self.user.balance_prof+=price
+        self.user.balance_tot+=price
 
     def __repr__(self) -> str:
         return f"{self.id}"
@@ -39,6 +47,8 @@ class Expenses(db.Model):
 
     def __init__(self, user_id, price, date, cat) -> None:
         self.user_id, self.price, self.date, self.cat = user_id, price, date, cat
+        self.user.balance_tot -= price
+        self.user.balance_exp += price
 
     def __repr__(self) -> str:
         return f"{self.id}"

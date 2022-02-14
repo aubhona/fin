@@ -19,6 +19,7 @@ def login():
             session["name"] = name
             session["surname"] = surname
             session["login"] = login
+            session.permanent = True
             flash(f"Добро пожаловать, {name}!", "success")
             return redirect(url_for("head"))
         else:
@@ -34,7 +35,7 @@ def head():
         else:
             session["expences"] = True
         max_pr_cat, max_pr, pop_cat = oper(session["id"])
-        img = f"{session['id']}-diag2.png"
+        img = f""
         if ("date" not in session):
             if (session["expences"] == True):
                 session["date"] = datetime.now().strftime("%Y-%m")
@@ -46,7 +47,8 @@ def head():
         response.set_cookie("", "", expires=datetime.now()+timedelta(hours=2))
         return response
     else:
-        return redirect(url_for("index"))
+        flash("Пожалуйста авторизуйтесь.", "danger")
+        return redirect(url_for("login"))
 
 @app.route("/registration", methods = ["GET", "POST"])
 def reg():
@@ -68,6 +70,7 @@ def reg():
             session["name"] = name
             session["surname"] = surname
             session["login"] = login
+            session.permanent = True
             flash(f"Добро пожаловать, {name}!", "success")
             return redirect(url_for("head"))
     return render_template("registration.html")
@@ -87,57 +90,78 @@ def logout():
 
 @app.route("/add", methods = ["GET", "POST"])
 def add():
-    if request.method == "POST":
-        price = int(request.form.get("price"))
-        date = request.form.get("date")
-        type_oper = request.form.get("type")
-        if type_oper == "+":
-            oper_add(session["id"], price, date)
-        else:
-            cat = request.form.get("cat")
-            if cat:
-                oper_add(session["id"], price, date, cat = cat)
+    if session.get("id"):
+        if request.method == "POST":
+            price = int(request.form.get("price"))
+            date = request.form.get("date")
+            type_oper = request.form.get("type")
+            if type_oper == "+":
+                oper_add(session["id"], price, date)
                 flash("Успешно добавлено.", "success")
             else:
-                flash("Выберите категорию траты", "warning")
-            session["expences"] = True
-    return render_template("add.html")
+                cat = request.form.get("cat")
+                if cat:
+                    res = oper_add(session["id"], price, date, cat = cat)
+                    if res is None:
+                        flash("Успешно добавлено.", "success")
+                    else:
+                        flash("Операция добвлена в историю, но общий остаток баланса не изменен, так как балана недостаточно.","warning")
+                else:
+                    flash("Выберите категорию траты", "warning")
+                session["expences"] = True
+        return render_template("add.html")
+    else:
+        flash("Пожалуйста авторизуйтесь.", "danger")
+        return redirect(url_for("login"))
 
 @app.route("/diagram", methods = ["GET", "POST"])
 def diagram():
-    img = ""
-    if request.method == "POST":
-        period = int(request.form.get("time"))
-        diag = int(request.form.get("diag"))
-        if session["expences"]:
-            if diag==1:
-                img = create_diagram_1(session["id"], period=period)
-            else:
-                img = create_diagram_2(session["id"], period=period)
-                if "date" in session:
-                    session.pop("date")
-    return render_template("diagram.html", img = img)
+    if session.get("id"):
+        img = ""
+        if request.method == "POST":
+            period = int(request.form.get("time"))
+            diag = int(request.form.get("diag"))
+            if session["expences"]:
+                if diag==1:
+                    img = create_diagram_1(session["id"], period=period)
+                else:
+                    img = create_diagram_2(session["id"], period=period)
+                    if "date" in session:
+                        session.pop("date")
+        return render_template("diagram.html", img = img)
+    else:
+        flash("Пожалуйста авторизуйтесь.", "danger")
+        return redirect(url_for("login"))
 
 @app.route("/profile", methods = ["GET", "POST"])
 def profile():
-    if request.method == "POST":
-        old_password = request.form.get("old_password")
-        if log_reg(session["login"], old_password, 1)[0]:
-            new_password = request.form.get("new_password")
-            reap_new_password = request.form.get("reap_new_password")
-            if new_password == reap_new_password:
-                log_reg(session["login"], new_password, 4)
-                flash("Пароль успешно сменён", "success")
+    if session.get("id"):
+        if request.method == "POST":
+            old_password = request.form.get("old_password")
+            if log_reg(session["login"], old_password, 1)[0]:
+                new_password = request.form.get("new_password")
+                reap_new_password = request.form.get("reap_new_password")
+                if new_password == reap_new_password:
+                    log_reg(session["login"], new_password, 4)
+                    flash("Пароль успешно сменён", "success")
+                else:
+                    flash("Пароли не совпадают", "warning")
             else:
-                flash("Пароли не совпадают", "warning")
-        else:
-            flash("Неправильный пароль", "danger")
-    return render_template("profile.html", name = session["name"], surname = session["surname"])
+                flash("Неправильный пароль", "danger")
+        return render_template("profile.html", name = session["name"], surname = session["surname"], sum_prof = calculate_operations_relatively_base(session["id"], None, None, 1), sum_exp = calculate_operations_relatively_base(session["id"], None, None, 2), sum_tot = calculate_operations_relatively_base(session["id"], None, None, 3))
+    else:
+        flash("Пожалуйста авторизуйтесь.", "danger")
+        return redirect(url_for("login"))
 
 @app.route("/history", methods = ["GET", "POST"])
 def history():
-    operat = get_expences(session["id"], 12)
-    xlx = save_excel(session["id"], "2020-01-01", "2022-03-03")
-    return render_template("history.html", oper = operat, xlx = xlx)
+    if session.get("id"):
+        operat = get_expences(session["id"], 12)
+        xlx = save_excel(session["id"], "2020-01-01", "2022-03-03")
+        return render_template("history.html", oper = operat, xlx = xlx)
+    else:
+        flash("Пожалуйста авторизуйтесь.", "danger")
+        return redirect(url_for("login"))
+
 if __name__ == "__main__":
     app.run(debug = True)

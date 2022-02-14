@@ -175,20 +175,23 @@ def save_excel(uid, sdate, edate):
     writer.save()
     return f"{uid}-export_to_excel.xlsx"
 
-def calculate_operations_relatively_base(user_id):
-    data = list(get_base_data(user_id))
-    base_operation_id = [int(data[-1][0]), int(data[-1][1])]
-    del data[-1]
-    profits = data[2]
-    expenses = data[1]
-    if base_operation_id[1] == "+":
-        base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), profits))[1]
+def calculate_operations_relatively_base(user_id, op_id, typ, code):
+    if op_id is not None:
+        data = list(get_base_data(user_id, op_id, typ, code))
+        base_operation_id = [int(data[-1][0]), int(data[-1][1])]
+        del data[-1]
+        profits = data[2]
+        expenses = data[1]
+        if base_operation_id[1] == "+":
+            base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), profits))[1]
+        else:
+            base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), expenses))[1]
+        recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation), profits))
+        recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation), expenses))
+        recalculated_balance = [int(data[0]) / base_operation]
+        return recalculated_balance + [recalculated_expenses] + [recalculated_profits]
     else:
-        base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), expenses))[1]
-    recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation), profits))
-    recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation), expenses))
-    recalculated_balance = [int(data[0]) / base_operation]
-    return recalculated_balance + recalculated_expenses + recalculated_profits
+        return get_base_data(user_id, op_id, typ, code)
 
 def log_reg(login, password, code, name = None, surname = None):
     if code == 1:
@@ -219,14 +222,13 @@ def oper_add(uid, price, date, cat = None):
     if cat is None:
         db_add_prof(uid, price, date)
     else:
-        db_add_exp(uid, price, date, cat)
+        return db_add_exp(uid, price, date, cat)
 
 def get_expences(uid, per):
     return get_db_expences(uid, per)
 
-def recalculate_balance(uid, period):
-    # PV = get_balance(uid=uid)
-    PV = 100
+def recalculate_balance(uid, period, code):
+    PV = get_balance(uid, code)
 
     url = "https://apidata.mos.ru/v1/datasets/62025/rows?api_key=d6dd03633051cdca213e0a016186697f&$orderby=global_id"
 
