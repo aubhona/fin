@@ -53,8 +53,6 @@ def calculate_remaining_expenses_using_ema(uid, categories):
 
     return for_current, for_next
 
-print(calculate_remaining_expenses_using_ema(1, "супермаркеты"))
-
 
 def calculate_remaining_expenses_using_linreg(uid, categories):
     months = []
