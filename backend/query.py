@@ -26,38 +26,55 @@ def get_data(uid, cat):  # date format: YYYY-mm-dd
     return list(dic.items())  # [(date1, price1), (date2, price2)] date format: YYYY-mm
 
 
-def get_data_for_xlx(uid, sdate, edate):  # date format: YYYY-mm-dd
-    sdate, edate = datetime.date(datetime.strptime(sdate, "%Y-%m-%d")), datetime.date(datetime.strptime(edate, "%Y-%m-%d"))
+def get_data_for_xlx(uid, sdate, edate, min_sum, max_sum):  # date format: YYYY-mm-dd
     dicex = []
     dicprof = []
     diccat = []
     dicexpr = []
     dicprofpr = []
-    for expense in Expenses.query.filter_by(user_id=uid).all():
-        if sdate <= datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) <= edate:
+    expenses = []
+    profits = []
+    if sdate:
+        sdate, edate = datetime.date(datetime.strptime(sdate, "%Y-%m-%d")), datetime.date(datetime.strptime(edate, "%Y-%m-%d"))
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            if (sdate <= datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) <= edate) and (min_sum<=expense.price<=max_sum):
+                expenses.append(expense)
+    else:
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            if (min_sum<=expense.price<=max_sum):
+                expenses.append(expense)
+    expenses.sort(key=lambda x: datetime.date(datetime.strptime(x.date, "%Y-%m-%d")), reverse=True)
+    for expense in expenses:
             date = f"{expense.date[8:]}.{expense.date[5:7]}.{expense.date[:4]}"
             dicex.append(date)
             diccat.append(expense.cat)
             dicexpr.append(expense.price)
-    for profit in Profits.query.filter_by(user_id=uid).all():
-        if sdate <= datetime.date(datetime.strptime(profit.date, "%Y-%m-%d")) <= edate:
+    if sdate:
+        for profit in Profits.query.filter_by(user_id=uid).all():
+            if (sdate <= datetime.date(datetime.strptime(profit.date, "%Y-%m-%d")) <= edate) and (min_sum<=profit.price<=max_sum):
+                profits.append(profit)
+    else:
+        for profit in Profits.query.filter_by(user_id=uid).all():
+            if (min_sum<=profit.price<=max_sum):
+                profits.append(profit)
+    profits.sort(key=lambda x: datetime.date(datetime.strptime(x.date, "%Y-%m-%d")), reverse=True)
+    for profit in profits:
             date = f"{profit.date[8:]}.{profit.date[5:7]}.{profit.date[:4]}"
             dicprof.append(date)
-            dicprofpr.append(expense.price)
+            dicprofpr.append(profit.price)
     return dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr
 
 
-def get_base_data(uid):
+def get_base_data(uid, op_id, typ, code):
     expenses = []
     profits = []
-    balance = [int(Users.query.filter_by(id=uid).one().balance)]
+    balance = [get_balance(uid, code)]
     for expense in Expenses.query.filter_by(user_id=uid).all():
         expenses.append((int(expense.id), int(expense.price)))
     for profit in Profits.query.filter_by(user_id=uid).all():
         profits.append((int(profit.id), int(profit.price)))
-    # -------------------------------
-    base_operation_id = [(666, "+/-")]
-    # -------------------------------
+
+    base_operation_id = [(op_id, typ)]
 
     return balance + expenses + profits + base_operation_id
 
@@ -146,18 +163,81 @@ def all_op(uid):
 
 def db_add_exp(uid, price, date, cat):
     cat = Expenses(uid, price, date, cat)
+    user = Users.query.filter_by(id = uid).one()
+    user.balance_exp += price
+    user.balance_tot -= price
     db.session.add(cat)
+    db.session.add(user)
     db.session.commit()
 
 def db_add_prof(uid, price, date):
     prof = Profits(uid, price, date)
+    user = Users.query.filter_by(id = uid).one()
+    user.balance_tot += price
+    user.balance_prof += price
     db.session.add(prof)
+    db.session.add(user)
     db.session.commit()
 
-def get_db_expences(uid, per):
-    date = datetime.date(datetime.today() - timedelta(weeks = per))
+def get_db_expences(uid, sdate, edate, min_sum, max_sum):
     oper = []
-    for expense in Expenses.query.filter_by(user_id=uid).all():
-        if datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) >= date:
-            oper.append((expense.date, expense.cat, expense.price))
+    if sdate:
+        sdate = datetime.date(datetime.strptime(sdate, "%Y-%m-%d"))
+        edate = datetime.date(datetime.strptime(edate, "%Y-%m-%d"))
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            if (sdate <= datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")) <= edate) and (min_sum<=expense.price<=max_sum):
+                oper.append((datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")), expense.cat, expense.price, expense.id))
+    else:
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            if  (min_sum<=expense.price<=max_sum):
+                oper.append((datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")), expense.cat, expense.price, expense.id))
     return oper
+
+def get_db_profits(uid, sdate, edate, min_sum, max_sum):
+    oper = []
+    if sdate:
+        sdate = datetime.date(datetime.strptime(sdate, "%Y-%m-%d"))
+        edate = datetime.date(datetime.strptime(edate, "%Y-%m-%d"))
+        for profit in Profits.query.filter_by(user_id=uid).all():
+            if (sdate <= datetime.date(datetime.strptime(profit.date, "%Y-%m-%d")) <= edate) and (min_sum<=profit.price<=max_sum):
+                oper.append((datetime.date(datetime.strptime(profit.date, "%Y-%m-%d")), profit.price, profit.id))
+    else:
+        for profit in Profits.query.filter_by(user_id=uid).all():
+            if (min_sum<=profit.price<=max_sum):
+                oper.append((datetime.date(datetime.strptime(profit.date, "%Y-%m-%d")), profit.price, profit.id))
+    return oper
+
+def get_balance(uid, code):
+    if code == 1:
+        return Users.query.filter_by(id=uid).one().balance_prof
+    if code == 2:
+        return Users.query.filter_by(id=uid).one().balance_exp
+    if code == 3:
+        return Users.query.filter_by(id=uid).one().balance_tot
+
+def del_expense(uid, op_id):
+    user = Users.query.filter_by(id = uid).one()
+    expense = Expenses.query.filter_by(id = op_id).one()
+    user.balance_exp -= expense.price
+    user.balance_tot += expense.price
+    db.session.add(user)
+    db.session.delete(expense)
+    db.session.commit()
+
+def del_profit(uid, op_id):
+    user = Users.query.filter_by(id = uid).one()
+    profit = Profits.query.filter_by(id = op_id).one()
+    user.balance_tot -= profit.price
+    user.balance_prof -= profit.price
+    db.session.add(user)
+    db.session.delete(profit)
+    db.session.commit()
+
+def check_exp(uid):
+    count = 0
+    try:
+        for expense in Expenses.query.filter_by(user_id = uid).all():
+            count+=1
+    except Exception:
+        count = 0
+    return count

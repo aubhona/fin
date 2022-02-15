@@ -36,13 +36,27 @@
                 Имя: {{name}}
                 <br>
                 Фамилия: {{surname}}
+                <br>
+                Общая сумма прибыли: {{sum_prof}}
+                <br>
+                Общая сумма трат: {{sum_exp}}
+                <br>
+                Общий остаток: {{sum_tot}}
+                <br>
                 <hr>
-    
+                <form method="POST">
+                <label for="value" style="display: block;"><b>Введите, на какой срок учитывать инфляцию(месяцы)</b></label>
+                <br>
+                <input type="number" placeholder="Введите срок" name="per" min="1" style="display: block;">
+                <br>
+                <input class="btn btn-primary btn-sm" type="submit" name = "ips" value="Отобразить общие остатоки с учётом инфляции">
+                </form>
+                <hr>
                 <div class="slide">
                     <label for="smnpar" class="btn btn-secondary btn-sm">
                         Сменить пароль
                     </label>
-                    <input type="checkbox" id="smnpar">
+                    <input type="checkbox" id="smnpar" style="display: none;">
                     <div>
                         <form method="POST">
 
@@ -61,7 +75,7 @@
                             <input name="reap_new_password" type="password"> 
                             <br>
                             <br>
-                            <input class="btn btn-primary btn-sm" type="submit" value="Подтвердить">
+                            <input class="btn btn-primary btn-sm" type="submit" name = "pas" value="Подтвердить">
                         </form>
                     </div>
                 </div>

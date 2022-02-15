@@ -48,6 +48,7 @@
                     document.body.appendChild(timeBookedScript);
             </script>
         <div style="margin-top:3%;">
+            {% block content %} {% endblock %}
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for cat, message in messages %}
@@ -58,7 +59,6 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
-            {% block content %} {% endblock %}
         </div>
     </main>
     <footer style="display: flex; background-color: #ffffff; float: bottom;">
