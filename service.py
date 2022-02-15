@@ -1,3 +1,4 @@
+import datetime
 import matplotlib
 import matplotlib.pyplot as plt
 from time import time
@@ -10,8 +11,15 @@ import json
 
 matplotlib.use('Agg')
 
+
 def calculate_remaining_expenses_using_ema(uid, categories):
     data = get_data(uid, categories)
+    data = [("2022-01", 150), ("2021-12", 100)]
+    max_date = max(data, key=lambda x: x[0])[0]
+    today = datetime.today().date()
+    today = str(today.year) + "-" + "0" * int(len(str(today.month)) == 1) + str(today.month)
+    if today > max_date:
+        data.append((today, 0))
     data_dict = {}
     for i in data:
         if i[0] in data:
@@ -44,6 +52,8 @@ def calculate_remaining_expenses_using_ema(uid, categories):
     for_next = data_copy[-1]
 
     return for_current, for_next
+
+print(calculate_remaining_expenses_using_ema(1, "супермаркеты"))
 
 
 def calculate_remaining_expenses_using_linreg(uid, categories):
@@ -113,6 +123,7 @@ def calculate_remaining_expenses_using_linreg(uid, categories):
     for_next2 = pred[0]
     return (for_current1 + for_current2) / 2, (for_next2 + for_next1) / 2
 
+
 def create_diagram_1(uid=1, period=1):
     data = get_stat(uid, period)
     values = []
@@ -164,16 +175,18 @@ def create_diagram_2(uid=1, period=1):
     # plt.show()
     return "{0}.png".format(str(uid) + "-diag2")
 
+
 def save_excel(uid, sdate, edate):
     dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr = get_data_for_xlx(uid, sdate, edate)
-    list1 = pd.DataFrame({"Дата":dicex, "Категория": diccat, "Расход(в руб.)":dicexpr})
-    list2 = pd.DataFrame({"Дата":dicprof, "Доход(в руб.)": dicprofpr})
-    tab = {"Доходы":list2, "Расходы":list1}
+    list1 = pd.DataFrame({"Дата": dicex, "Категория": diccat, "Расход(в руб.)": dicexpr})
+    list2 = pd.DataFrame({"Дата": dicprof, "Доход(в руб.)": dicprofpr})
+    tab = {"Доходы": list2, "Расходы": list1}
     writer = pd.ExcelWriter(f"static/resources/{uid}-export_to_excel.xlsx", engine='xlsxwriter')
     tab["Доходы"].to_excel(writer, sheet_name="Доходы", index=False)
-    tab["Расходы"].to_excel(writer, sheet_name="Расходы",index=False)
+    tab["Расходы"].to_excel(writer, sheet_name="Расходы", index=False)
     writer.save()
     return f"{uid}-export_to_excel.xlsx"
+
 
 def calculate_operations_relatively_base(user_id):
     data = list(get_base_data(user_id))
@@ -190,15 +203,17 @@ def calculate_operations_relatively_base(user_id):
     recalculated_balance = [int(data[0]) / base_operation]
     return recalculated_balance + recalculated_expenses + recalculated_profits
 
-def log_reg(login, password, code, name = None, surname = None):
+
+def log_reg(login, password, code, name=None, surname=None):
     if code == 1:
         return is_in_db(login, password, 1)
     elif code == 2:
         return is_in_db(login, "", 2)
     elif code == 3:
-        return regis(login, password, name = name, surname = surname, code = 1)
+        return regis(login, password, name=name, surname=surname, code=1)
     else:
-        regis(login, password, code = 2)
+        regis(login, password, code=2)
+
 
 def ls_op(uid):
     cat, pr = las(uid)
@@ -206,23 +221,27 @@ def ls_op(uid):
         return "Вы не совершали расходы."
     return f"{cat.lower()} - {pr} рублей."
 
+
 def oper(uid):
     price, cat, pop_cat, pop_cat_count, max_cat, max_cat_pr = all_op(uid)
-    if price=="There is not operation":
+    if price == "There is not operation":
         return "Вы не совершали расходы.", "Вы не совершали расходы.", "Вы не совершали расходы."
     max_pr = f" {price} рублей на категорию: {cat.lower()}."
     pop_cat = f"категорию {pop_cat.lower()}, Вы совершали расходы по этой категории {pop_cat_count} раз."
     max_cat = f"категорию {max_cat.lower()}, в сумме Вы потратили {max_cat_pr} рублей на эту категорию."
     return max_cat, max_pr, pop_cat
 
-def oper_add(uid, price, date, cat = None):
+
+def oper_add(uid, price, date, cat=None):
     if cat is None:
         db_add_prof(uid, price, date)
     else:
         db_add_exp(uid, price, date, cat)
 
+
 def get_expences(uid, per):
     return get_db_expences(uid, per)
+
 
 def recalculate_balance(uid, period):
     # PV = get_balance(uid=uid)
