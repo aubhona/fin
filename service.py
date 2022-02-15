@@ -12,6 +12,7 @@ matplotlib.use('Agg')
 
 def calculate_remaining_expenses_using_ema(uid, categories):
     data = get_data(uid, categories)
+
     data_dict = {}
     for i in data:
         if i[0] in data:
@@ -30,6 +31,8 @@ def calculate_remaining_expenses_using_ema(uid, categories):
             data[i] = int(data[i][1])
         else:
             data[i] = k * int(data[i][1]) + data[i - 1] * (1 - k)
+    if len(data) == 0:
+        data = [0]
     for_current = data[-1] - current_month
 
     if for_current < 0:
@@ -138,34 +141,36 @@ def create_diagram_1(uid=1, period=1):
 
 def create_diagram_2(uid=1, period=1):
     data = get_stat(uid, period)
-    sizes = []
-    labels = []
-    for item in data:
-        labels.append(item[0])
-        sizes.append(int(item[1]))
-    summ = sum(sizes)
-    explode = [0] * len(sizes)
-    for i in range(len(sizes)):
-        sizes[i] = (sizes[i] / summ) * 100
-    sorted_sizes = sorted(sizes)
+    if data:
+        sizes = []
+        labels = []
+        for item in data:
+            labels.append(item[0])
+            sizes.append(int(item[1]))
+        summ = sum(sizes)
+        explode = [0] * len(sizes)
+        for i in range(len(sizes)):
+            sizes[i] = (sizes[i] / summ) * 100
+        sorted_sizes = sorted(sizes)
 
-    for i in sorted_sizes:
-        index = sizes.index(i)
-        explode[index] = 0.8 * (i / 100) ** 2
-    explode[sizes.index(min(sizes))] = 0
+        for i in sorted_sizes:
+            index = sizes.index(i)
+            explode[index] = 0.8 * (i / 100) ** 2
+        explode[sizes.index(min(sizes))] = 0
 
-    fig1, ax1 = plt.subplots()
-    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-            shadow=True, startangle=80)
-    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    ax1.set_title('Расходы по категориям')
-    path = "static/img/{0}.png".format(str(uid) + "-diag2")
-    plt.savefig(path, facecolor="#FFE4E1")
-    # plt.show()
-    return "{0}.png".format(str(uid) + "-diag2")
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=80)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax1.set_title('Расходы по категориям')
+        path = "static/img/{0}.png".format(str(uid) + "-diag2")
+        plt.savefig(path, facecolor="#FFE4E1")
+        # plt.show()
+        return "{0}.png".format(str(uid) + "-diag2")
+    return ""
 
-def save_excel(uid, sdate, edate):
-    dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr = get_data_for_xlx(uid, sdate, edate)
+def save_excel(uid, sdate, edate, min_sum, max_sum):
+    dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr = get_data_for_xlx(uid, sdate, edate, min_sum, max_sum)
     list1 = pd.DataFrame({"Дата":dicex, "Категория": diccat, "Расход(в руб.)":dicexpr})
     list2 = pd.DataFrame({"Дата":dicprof, "Доход(в руб.)": dicprofpr})
     tab = {"Доходы":list2, "Расходы":list1}
@@ -178,20 +183,20 @@ def save_excel(uid, sdate, edate):
 def calculate_operations_relatively_base(user_id, op_id, typ, code):
     if op_id is not None:
         data = list(get_base_data(user_id, op_id, typ, code))
-        base_operation_id = [int(data[-1][0]), int(data[-1][1])]
+        base_operation_id = [int(data[-1][0]), data[-1][1]]
         del data[-1]
         profits = data[2]
         expenses = data[1]
         if base_operation_id[1] == "+":
-            base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), profits))[1]
+            base_operation = list(filter(lambda x: int(x) == int(base_operation_id[0]), profits))[0]
         else:
-            base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), expenses))[1]
+            base_operation = list(filter(lambda x: int(x) == int(base_operation_id[0]), expenses))[0]
         recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation), profits))
         recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation), expenses))
         recalculated_balance = [int(data[0]) / base_operation]
         return recalculated_balance + [recalculated_expenses] + [recalculated_profits]
     else:
-        return get_base_data(user_id, op_id, typ, code)
+        return get_balance(user_id, code)
 
 def log_reg(login, password, code, name = None, surname = None):
     if code == 1:
@@ -224,24 +229,87 @@ def oper_add(uid, price, date, cat = None):
     else:
         return db_add_exp(uid, price, date, cat)
 
-def get_expences(uid, per):
-    return get_db_expences(uid, per)
+def chan_date(date, typ):
+    year = date.strftime("%Y")
+    month = int(date.strftime("%m"))
+    day = date.strftime("%d")
+    week_day = date.weekday()
+    dic_week = {}
+    dic_week[0] = "пн"
+    dic_week[1] = "вт"
+    dic_week[2] = "ср"
+    dic_week[3] = "чт"
+    dic_week[4] = "пт"
+    dic_week[5] = "сб"
+    dic_week[6] = "вс"
+    dic_month = {}
+    dic_month[1] = "января"
+    dic_month[2] = "февраля"
+    dic_month[3] = "марта"
+    dic_month[4] = "апреля"
+    dic_month[5] = "мая"
+    dic_month[6] = "июня"
+    dic_month[7] = "июля"
+    dic_month[8] = "августа"
+    dic_month[9] = "сентября"
+    dic_month[10] = "октября"
+    dic_month[11] = "ноября"
+    dic_month[12] = "декабря"
+    if typ == "+":
+        mes = "заработали "
+    else:
+        mes = "потратили на категорию "
+    return f"{day} {dic_month[month]} {dic_week[week_day]} Вы {mes}"
+
+def get_oper(uid, sdate, edate, min_sum, max_sum):
+    oper = []
+    for i in sorted(get_db_expences(uid, sdate, edate, min_sum, max_sum)+get_db_profits(uid, sdate, edate, min_sum, max_sum),  key=lambda x: x[0], reverse=True):
+        if len(i)==3:
+            date = chan_date(i[0], "+") + str(i[1]) + " руб."
+            oper.append((date, f"+{i[2]}"))
+        else:
+            date = chan_date(i[0], "-") + i[1].lower() + " " + str(i[2]) + " руб."
+            oper.append((date, f"-{i[3]}"))
+    return oper
+
 
 def recalculate_balance(uid, period, code):
     PV = get_balance(uid, code)
-
     url = "https://apidata.mos.ru/v1/datasets/62025/rows?api_key=d6dd03633051cdca213e0a016186697f&$orderby=global_id"
-
     payload = {}
     headers = {}
-
     response = requests.request("GET", url, headers=headers, data=payload)
     text = response.text
     data = json.loads(text)[-1]
     IPC = float(data["Cells"]["Value"])
-
     FV = PV * (1. - (period / 12.) * ((IPC - 100.) / 100.))
     if FV < 0:
         FV = 0.
-
     return FV
+
+def save_file(uid, operat):
+    count = 0
+    fil = open("static/resources/"+str(uid)+"oper.txt", "w")
+    for i in operat:
+        if i[0] and i[1]:
+            count +=1
+            print(i[0], file = fil)
+            print(i[1], file = fil)
+    fil.close()
+
+def read_file(uid, length):
+    fil = open("static/resources/"+str(uid)+"oper.txt", "r")
+    operat = []
+    for i in range(length):
+        operat.append((fil.readline()[:-1], fil.readline()[:-1]))
+    fil.close()
+    return operat
+
+def del_oper(uid, oper_id):
+    if oper_id[0] == "+":
+        del_profit(uid, int(oper_id[1:]))
+    else:
+        del_expense(uid, int(oper_id[1:]))
+
+def check_db_exp(uid):
+    return check_exp(uid)

@@ -26,12 +26,9 @@ class Profits(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     price = db.Column(db.Float, nullable=False)
     date = db.Column(db.String, nullable=False)
-    user = db.relationship("Users", backref=db.backref("profits", lazy=False))
 
     def __init__(self, user_id, price, date) -> None:
         self.user_id, self.price, self.date = user_id, price, date
-        self.user.balance_prof+=price
-        self.user.balance_tot+=price
 
     def __repr__(self) -> str:
         return f"{self.id}"
@@ -43,12 +40,9 @@ class Expenses(db.Model):
     price = db.Column(db.Float, nullable=False)
     date = db.Column(db.String, nullable=False)
     cat = db.Column(db.String, nullable=False)
-    user = db.relationship("Users", backref=db.backref("expenses", lazy=False))
 
     def __init__(self, user_id, price, date, cat) -> None:
         self.user_id, self.price, self.date, self.cat = user_id, price, date, cat
-        self.user.balance_tot -= price
-        self.user.balance_exp += price
 
     def __repr__(self) -> str:
         return f"{self.id}"

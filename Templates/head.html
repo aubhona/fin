@@ -22,18 +22,22 @@
             </header>
 
             <section>
+                {% if last_oper!="Вы не совершали расходы." %}
                 Последняя операция: {{last_oper}}
-                
+                {% else %}
+                Последней операции нет, т.к. {{last_oper}}
+                {% endif %}
                 {% if img %}
                 <hr>
 
                 Статистика за этот месяц: <br>
-                <img src="{{ url_for('static', filename='img/' + img)}}", alt="Вы не совершали расходы.">
+                <img src="{{ url_for('static', filename='img/' + img)}}" style="margin-top: 1%; width: 450px; height: 350px; border-radius: 10px; border-style: outset;" alt="Вы не совершали расходы.">
                 {% endif %}
                 <hr>
 
                 В прошлом месяце: 
                 <ul>
+                    {% if max_pr_cat != "Вы не совершали расходы." %}
                     <li>
                         Больше всего потратили на {{max_pr_cat}}
                     </li>
@@ -43,8 +47,31 @@
                     <li>
                         Чаще всего тратили на {{pop_cat}}
                     </li>
+                    {% else %}
+                    {{max_pr_cat}}
+                    {% endif %}
                 </ul>
                 <hr>
+                <h1>Прогнозирование </h1>
+                <form method="POST">
+                    <br>
+                    <select name="cat"  size="1" id="cat" class="form-select">
+                        <option selected value="">Выберите категорию, по которой хотите прогнозирование</option>
+                        <option value="Супермаркеты">Супермаркеты</option>
+                        <option value="Развлечение">Развлечение</option>
+                        <option value="Рестораны">Рестораны</option>
+                        <option value="Переводы">Переводы</option>
+                    </select>
+                    <br>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <input type="submit" class="btn btn-primary" name = "sr" value="Прогнозировать с помощью скользящего среднего">
+                    <input type="submit" class="btn btn-primary" name = "reg" value="Прогнозировать с помощью линейной регресии">
+                </div>
+                <div style="font-size: xx-large; margin-top: 1%;">
+                {{res1}}
+                {{res2}}
+                </div>
+                </form>
             </section>
             </article>
     </main>

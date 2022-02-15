@@ -46,7 +46,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">Применить</button>
                         </form>
                         {% if img %}
-                        <img src="{{ url_for('static', filename='img/' + img)}}", alt="Вы не совершали расходы.">
+                        <img src="{{ url_for('static', filename='img/' + img)}}" style="margin-top: 1%; width: 450px; height: 350px; border-radius: 10px; border-style: outset;" alt="Вы не совершали расходы.">
                         {% endif %}
                     </div>
                 </div>
