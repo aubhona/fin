@@ -72,12 +72,19 @@
                 <form method="POST">
                 <input class="btn btn-primary btn-sm" type="submit" name = "del_history" value="Удалить выбранные операции">
                 <input class="btn btn-primary btn-sm" type="submit" name = "base" value="Сделать выбранную операцию базовой">
-                <input class="btn btn-primary btn-sm" type="submit" name = "del_base" value="Отменить выбранную операцию">
+                <input class="btn btn-primary btn-sm" type="submit" name = "del_base" value="Отменить базовую операцию">
+                <hr>
+                {% if base %}
+                {{base[0]}}
+                Эта операция выбрана базовой
+                {% else %}
+                Базовая операция не выбрана
+                {% endif %}
                 <hr>
                 <div class="list-group">
                 {% for mes_oper, id in oper %}
                 <label class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="{{id}}">
+                    <input class="form-check-input me-1" type="checkbox" name="{{id}}" value="{{id}}">
                     {{mes_oper}}
                 </label>
                 {% endfor %}

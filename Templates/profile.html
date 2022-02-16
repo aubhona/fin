@@ -43,6 +43,12 @@
                 <br>
                 Общий остаток: {{sum_tot}}
                 <br>
+                {% if base %}
+                {{base[0]}}
+                Эта операция выбрана базовой
+                {% else %}
+                Базовая операция не выбрана
+                {% endif %}
                 <hr>
                 <form method="POST">
                 <label for="value" style="display: block;"><b>Введите, на какой срок учитывать инфляцию(месяцы)</b></label>

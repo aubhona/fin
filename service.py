@@ -118,25 +118,27 @@ def calculate_remaining_expenses_using_linreg(uid, categories):
 
 def create_diagram_1(uid=1, period=1):
     data = get_stat(uid, period)
-    values = []
-    labels = []
-    width = 0.55
-    for item in data:
-        labels.append(item[0])
-        values.append(int(item[1]))
+    if data:
+        values = []
+        labels = []
+        width = 0.55
+        for item in data:
+            labels.append(item[0])
+            values.append(int(item[1]))
 
-    fig, ax = plt.subplots()
+        fig, ax = plt.subplots()
 
-    ax.bar(labels, values, width, label='Total', color="#696969")
+        ax.bar(labels, values, width, label='Total', color="#696969")
 
-    ax.set_ylabel('Потрачено в общем')
-    ax.set_title('Расходы по категориям')
-    ax.set_facecolor("#C0C0C0")
+        ax.set_ylabel('Потрачено в общем')
+        ax.set_title('Расходы по категориям')
+        ax.set_facecolor("#C0C0C0")
 
-    path = "static/img/{0}.png".format(str(uid) + "-diag1")
-    plt.savefig(path, facecolor="#FFE4E1")
-    # plt.show()
-    return "{0}.png".format(str(uid) + "-diag1")
+        path = "static/img/{0}.png".format(str(uid) + "-diag1")
+        plt.savefig(path, facecolor="#FFE4E1")
+        # plt.show()
+        return "{0}.png".format(str(uid) + "-diag1")
+    return ""
 
 
 def create_diagram_2(uid=1, period=1):
@@ -188,13 +190,13 @@ def calculate_operations_relatively_base(user_id, op_id, typ, code):
         profits = data[2]
         expenses = data[1]
         if base_operation_id[1] == "+":
-            base_operation = list(filter(lambda x: int(x) == int(base_operation_id[0]), profits))[0]
+            base_operation = list(filter(lambda x: int(x[1]) == int(base_operation_id[0]), profits))[0]
         else:
-            base_operation = list(filter(lambda x: int(x) == int(base_operation_id[0]), expenses))[0]
-        recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation), profits))
-        recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation), expenses))
-        recalculated_balance = [int(data[0]) / base_operation]
-        return recalculated_balance + [recalculated_expenses] + [recalculated_profits]
+            base_operation = list(filter(lambda x: int(x[1]) == int(base_operation_id[0]), expenses))[0]
+        recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation[0]), profits))
+        recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation[0]), expenses))
+        recalculated_balance = [int(data[0]) / base_operation[0]]
+        print(recalculated_balance + [recalculated_expenses] + [recalculated_profits])
     else:
         return get_balance(user_id, code)
 
@@ -296,6 +298,7 @@ def save_file(uid, operat):
             print(i[0], file = fil)
             print(i[1], file = fil)
     fil.close()
+    return len(operat)
 
 def read_file(uid, length):
     fil = open("static/resources/"+str(uid)+"oper.txt", "r")

@@ -41,14 +41,16 @@ def head():
         else:
             session["expences"] = True
         max_pr_cat, max_pr, pop_cat = oper(session["id"])
-        img = f""
+        img = ""
         if ("date" not in session):
             if (session["expences"] == True):
-                session["date"] = datetime.now().strftime("%Y-%m")
                 img = create_diagram_2(session["id"], None)
+                if img:
+                    session["date"] = datetime.now().strftime("%Y-%m")
         elif (session["date"] != datetime.now().strftime("%Y-%m")) and (session["expences"] == True):
-            session["date"] = datetime.now().strftime("%Y-%m")
             img = create_diagram_2(session["id"], None)
+            if img:
+                session["date"] = datetime.now().strftime("%Y-%m")
         elif session["date"]==datetime.now().strftime("%Y-%m"):
             img = f"{session['id']}-diag2.png"
         if request.method == "POST":
@@ -170,10 +172,10 @@ def profile():
         b_tot = calculate_operations_relatively_base(session["id"], None, None, 3)
         if session.get("base"):
             pass
-            #b_prof = calculate_operations_relatively_base(session["id"], session["base"][1:], session["base"][0], 1)
-            #b_exp = calculate_operations_relatively_base(session["id"], session["base"][1:], session["base"][0], 2)
+            #b_prof = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 1)
+            #b_exp = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 2)
             #if b_tot>0:
-                #b_tot = calculate_operations_relatively_base(session["id"], session["base"][1:], session["base"][0], 3)
+            #    b_tot = calculate_operations_relatively_base(session["id"], session["base"][1:], session["base"][0], 3)
             #else:
             #    flash("Общая сумма не пересчитывается, когда она отрицательна.", "info")
         if request.method == "POST":
@@ -202,7 +204,7 @@ def profile():
                         flash("Общая сумма не пересчитывается, когда она отрицательна.", "info")
                 except Exception:
                     flash("Введите срок.", "warning")
-        return render_template("profile.html", name = session["name"], surname = session["surname"], sum_prof = b_prof, sum_exp = b_exp, sum_tot = b_tot)
+        return render_template("profile.html", name = session["name"], surname = session["surname"], sum_prof = b_prof, sum_exp = b_exp, sum_tot = b_tot, base = session.get("base"))
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")
         return redirect(url_for("login"))
@@ -238,7 +240,6 @@ def history():
                         flash("Вы не указали ограничение, поэтому покажутся операции с любой суммой.", "info")
                     operat = get_oper(session["id"], sdate, edate, min_sum, max_sum)
                     session["len"] = save_file(session["id"], operat)
-                    session["len"] = len(operat)
                     session["par"] = [sdate, edate, min_sum, max_sum]
                     xlx = save_excel(session["id"], sdate, edate, min_sum, max_sum)
                 else:
@@ -262,9 +263,11 @@ def history():
                     oper = []
                     for j, i in operat:
                         op  = request.form.get(i)
+                        print(i, op)
                         if op:
                             del_oper(session["id"], i)
-                            session["expences"] -= 1
+                            if i[0]=="-":
+                                session["expences"] -= 1
                             if session.get("base"):
                                 if session["base"] == i:
                                     session.pop("base")
@@ -276,10 +279,10 @@ def history():
             elif session["expences"] and btn_base:
                 oper = False
                 if session.get("len"):
-                    for _, i in operat:
+                    for j, i in operat:
                         op  = request.form.get(i)
                         if op and (not session.get("base")):
-                            session["base"] = i
+                            session["base"] = (j, i)
                         else:
                             if op:
                                 oper = True
@@ -288,7 +291,7 @@ def history():
             elif session["expences"] and btn_del_base:
                 if session.get("base"):
                     session.pop("base")
-        return render_template("history.html", oper = operat, xlx = xlx)
+        return render_template("history.html", oper = operat, xlx = xlx, base = session.get("base"))
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")
         return redirect(url_for("login"))
