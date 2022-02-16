@@ -12,7 +12,12 @@ matplotlib.use('Agg')
 
 def calculate_remaining_expenses_using_ema(uid, categories):
     data = get_data(uid, categories)
-
+    data = [("2022-01", 150), ("2021-12", 100)]
+    max_date = max(data, key=lambda x: x[0])[0]
+    today = datetime.today().date()
+    today = str(today.year) + "-" + "0" * int(len(str(today.month)) == 1) + str(today.month)
+    if today > max_date:
+        data.append((today, 0))
     data_dict = {}
     for i in data:
         if i[0] in data:
@@ -31,9 +36,20 @@ def calculate_remaining_expenses_using_ema(uid, categories):
             data[i] = int(data[i][1])
         else:
             data[i] = k * int(data[i][1]) + data[i - 1] * (1 - k)
-    if len(data) == 0:
-        data = [0]
     for_current = data[-1] - current_month
+
+    if for_current < 0:
+        for_current = 0
+    data_copy[-1] = (data_copy[-1][0], data_copy[-1][1] + for_current)
+    data_copy.append(("1", 0))
+    for i in range(len(data_copy)):
+        if i == 0:
+            data_copy[i] = int(data_copy[i][1])
+        else:
+            data_copy[i] = k * int(data_copy[i][1]) + data_copy[i - 1] * (1 - k)
+    for_next = data_copy[-1]
+
+    return for_current, for_next
 
     if for_current < 0:
         for_current = 0
@@ -171,8 +187,15 @@ def create_diagram_2(uid=1, period=1):
         return "{0}.png".format(str(uid) + "-diag2")
     return ""
 
-def save_excel(uid, sdate, edate, min_sum, max_sum):
+def save_excel(uid, sdate, edate, min_sum, max_sum, typ):
     dicex, diccat, dicexpr, dicexpr, dicprof, dicprofpr = get_data_for_xlx(uid, sdate, edate, min_sum, max_sum)
+    if typ=="+":
+        dicex = []
+        diccat = []
+        dicexpr = []
+    elif typ == "-":
+        dicprof = []
+        dicprofpr = []
     list1 = pd.DataFrame({"Дата":dicex, "Категория": diccat, "Расход(в руб.)":dicexpr})
     list2 = pd.DataFrame({"Дата":dicprof, "Доход(в руб.)": dicprofpr})
     tab = {"Доходы":list2, "Расходы":list1}
@@ -190,13 +213,17 @@ def calculate_operations_relatively_base(user_id, op_id, typ, code):
         profits = data[2]
         expenses = data[1]
         if base_operation_id[1] == "+":
-            base_operation = list(filter(lambda x: int(x[1]) == int(base_operation_id[0]), profits))[0]
+            base_operation = list(filter(lambda x: int(x[0]) == int(base_operation_id[0]), profits))[0]
         else:
-            base_operation = list(filter(lambda x: int(x[1]) == int(base_operation_id[0]), expenses))[0]
-        recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation[0]), profits))
-        recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation[0]), expenses))
-        recalculated_balance = [int(data[0]) / base_operation[0]]
-        print(recalculated_balance + [recalculated_expenses] + [recalculated_profits])
+            base_operation = list(filter(lambda x: (int(x[0]) == int(base_operation_id[0])), expenses))[0]
+        recalculated_profits = list(map(lambda x: (x[0], float(x[1]) / base_operation[1]), profits))
+        recalculated_expenses = list(map(lambda x: (x[0], float(x[1]) / base_operation[1]), expenses))
+        if code!=4:
+            recalculated_balance = [int(data[0]) / base_operation[1]]
+        if code !=4:
+            return recalculated_balance + [recalculated_expenses] + [recalculated_profits]
+        else:
+            return [recalculated_expenses] + [recalculated_profits]
     else:
         return get_balance(user_id, code)
 
@@ -263,9 +290,17 @@ def chan_date(date, typ):
         mes = "потратили на категорию "
     return f"{day} {dic_month[month]} {dic_week[week_day]} Вы {mes}"
 
-def get_oper(uid, sdate, edate, min_sum, max_sum):
+def get_oper(uid, sdate, edate, min_sum, max_sum, typ):
     oper = []
-    for i in sorted(get_db_expences(uid, sdate, edate, min_sum, max_sum)+get_db_profits(uid, sdate, edate, min_sum, max_sum),  key=lambda x: x[0], reverse=True):
+    exp = get_db_expences(uid, sdate, edate, min_sum, max_sum)
+    prof = get_db_profits(uid, sdate, edate, min_sum, max_sum)
+    if typ == "+-":
+        op = exp+prof
+    elif typ == "+":
+        op = prof
+    elif typ == "-":
+        op = exp
+    for i in sorted(op,  key=lambda x: x[0], reverse=True):
         if len(i)==3:
             date = chan_date(i[0], "+") + str(i[1]) + " руб."
             oper.append((date, f"+{i[2]}"))
@@ -316,3 +351,8 @@ def del_oper(uid, oper_id):
 
 def check_db_exp(uid):
     return check_exp(uid)
+
+def count_month(uid, cat):
+    if count_exp(uid, cat) <6:
+        return False
+    return True
