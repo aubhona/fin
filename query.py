@@ -1,4 +1,4 @@
-from backend.models import *
+from fin.models import *
 from datetime import datetime, timedelta
 from collections import defaultdict
 

@@ -1,7 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
-from time import time
-from backend.query import *
+from fin.query import *
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import pandas as pd
