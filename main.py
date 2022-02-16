@@ -61,11 +61,19 @@ def head():
                 if btn_sr:
                     res_cur, res_next = calculate_remaining_expenses_using_ema(session["id"], cat)
                 elif btn_reg:
-                    res_cur, res_next = calculate_remaining_expenses_using_linreg(session["id"], cat)
-                res_cur = round(res_cur, 2)
-                res_next = round(res_next, 2)
-                res1 = f"По категории {cat.lower()} вы, скорее всего, потратите до конца месяца {res_cur} руб."
-                res2 = f"По категории {cat.lower()} вы, скорее всего, потратите в следующем месяце {res_next} руб."
+                    if count_month(session["id"], cat):
+                        res_cur, res_next = calculate_remaining_expenses_using_linreg(session["id"], cat)
+                    else:
+                        res_cur, res_next = None, None
+                if res_cur:
+                    res_cur = round(res_cur, 2)
+                    res_next = round(res_next, 2)
+                    res1 = f"По категории {cat.lower()} вы, скорее всего, потратите до конца месяца {res_cur} руб."
+                    res2 = f"По категории {cat.lower()} вы, скорее всего, потратите в следующем месяце {res_next} руб."
+                else:
+                    res1 = ""
+                    res2 = ""
+                    flash("Расчёт по линейной регрессии работает, если по даной категории есть данные от 6 месяцев","info")
             else:
                 flash("Выберите категорию прогнозирования", "warning")
         response = make_response(render_template("head.html", img = img, last_oper = last_oper, max_pr_cat = max_pr_cat, max_pr = max_pr, pop_cat = pop_cat, res1 = res1, res2 = res2))
@@ -159,6 +167,8 @@ def diagram():
                     img = create_diagram_2(session["id"], period=period)
                     if "date" in session:
                         session.pop("date")
+        if not img:
+            flash("Диграмма не может быть создана, пока нет расходов", "info")
         return render_template("diagram.html", img = img)
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")
@@ -171,13 +181,15 @@ def profile():
         b_exp = calculate_operations_relatively_base(session["id"], None, None, 2)
         b_tot = calculate_operations_relatively_base(session["id"], None, None, 3)
         if session.get("base"):
-            pass
-            #b_prof = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 1)
-            #b_exp = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 2)
-            #if b_tot>0:
-            #    b_tot = calculate_operations_relatively_base(session["id"], session["base"][1:], session["base"][0], 3)
-            #else:
-            #    flash("Общая сумма не пересчитывается, когда она отрицательна.", "info")
+            b_prof  = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 1)[0]
+            b_exp = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 2)[0]
+            if b_tot>0:
+                b_tot = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 3)[0]
+            else:
+                flash("Общая сумма не пересчитывается, когда она отрицательна.", "info")
+            b_prof = round(b_prof, 2)
+            b_exp = round(b_exp, 2)
+            b_tot = round(b_tot, 2)
         if request.method == "POST":
             btn_ips = request.form.get("ips")
             btn_pas = request.form.get("pas")
@@ -238,10 +250,19 @@ def history():
                         min_sum = float("-inf")
                         max_sum = float("inf")
                         flash("Вы не указали ограничение, поэтому покажутся операции с любой суммой.", "info")
-                    operat = get_oper(session["id"], sdate, edate, min_sum, max_sum)
-                    session["len"] = save_file(session["id"], operat)
-                    session["par"] = [sdate, edate, min_sum, max_sum]
-                    xlx = save_excel(session["id"], sdate, edate, min_sum, max_sum)
+                    typ1 = request.form.get("prof")
+                    typ2 = request.form.get("ex")
+                    if typ1 or typ2:
+                        if not typ1:
+                                typ1 = ""
+                        if not typ2:
+                            typ2 = ""
+                        operat = get_oper(session["id"], sdate, edate, min_sum, max_sum, typ1+typ2)
+                        session["len"] = save_file(session["id"], operat)
+                        session["par"] = [sdate, edate, min_sum, max_sum]
+                        xlx = save_excel(session["id"], sdate, edate, min_sum, max_sum, typ1+typ2)
+                    else:
+                        flash("Вы не указали тип операции", "warning")
                 else:
                     if check:
                         try:
@@ -251,10 +272,19 @@ def history():
                             min_sum = float("-inf")
                             max_sum = float("inf")
                             flash("Вы не указали ограничение, поэтому покажутся операции с любой суммой.", "info")
-                        operat = get_oper(session["id"], sdate, edate, min_sum, max_sum)
-                        session["len"] = save_file(session["id"], operat)
-                        session["par"] = [sdate, edate, min_sum, max_sum]
-                        xlx = save_excel(session["id"], sdate, edate, min_sum, max_sum)
+                        typ1 = request.form.get("prof")
+                        typ2 = request.form.get("ex")
+                        if typ1 or typ2:
+                            if not typ1:
+                                typ1 = ""
+                            if not typ2:
+                                typ2 = ""
+                            operat = get_oper(session["id"], sdate, edate, min_sum, max_sum, typ1+typ2)
+                            session["len"] = save_file(session["id"], operat)
+                            session["par"] = [sdate, edate, min_sum, max_sum]
+                            xlx = save_excel(session["id"], sdate, edate, min_sum, max_sum, typ1+typ2)
+                        else:
+                            flash("Вы не указали тип операции", "warning")
                     else:
                         operat = []
                         flash("Введите начало и конец периода","warning")
@@ -263,7 +293,6 @@ def history():
                     oper = []
                     for j, i in operat:
                         op  = request.form.get(i)
-                        print(i, op)
                         if op:
                             del_oper(session["id"], i)
                             if i[0]=="-":
@@ -291,6 +320,25 @@ def history():
             elif session["expences"] and btn_del_base:
                 if session.get("base"):
                     session.pop("base")
+        if session.get("base"):
+            expenses, profits = calculate_operations_relatively_base(session["id"], session["base"][1][1:], session["base"][1][0], 4)
+            dic = {}
+            for i in range(len(operat)):
+                dic[operat[i][1]] = operat[i][0]
+            for i in range(len(profits)):
+                if ("+"+str(profits[i][0])) in dic:
+                    mes = dic["+"+str(profits[i][0])]
+                    prob_2 = mes.rfind(" ")
+                    prob_1 = mes.rfind(" ", 0, prob_2-1)
+                    dic["+"+str(profits[i][0])] = mes[:prob_1+1]+str(round(profits[i][1], 2))+mes[prob_2:]
+            for i in range(len(expenses)):
+                if ("-"+str(expenses[i][0])) in dic:
+                    mes = dic["-"+str(expenses[i][0])]
+                    prob_2 = mes.rfind(" ")
+                    prob_1 = mes.rfind(" ", 0, prob_2-1)
+                    dic["-"+str(expenses[i][0])] = mes[:prob_1+1]+str(round(expenses[i][1], 2))+mes[prob_2:]
+            for i in range(len(operat)):
+                operat[i] = (dic[operat[i][1]], operat[i][0])
         return render_template("history.html", oper = operat, xlx = xlx, base = session.get("base"))
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")

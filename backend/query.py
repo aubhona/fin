@@ -68,15 +68,21 @@ def get_data_for_xlx(uid, sdate, edate, min_sum, max_sum):  # date format: YYYY-
 def get_base_data(uid, op_id, typ, code):
     expenses = []
     profits = []
+    balance = []
     balance = [get_balance(uid, code)]
-    for expense in Expenses.query.filter_by(user_id=uid).all():
-        expenses.append((int(expense.id), int(expense.price)))
-    for profit in Profits.query.filter_by(user_id=uid).all():
-        profits.append((int(profit.id), int(profit.price)))
-
     base_operation_id = [(op_id, typ)]
+    if code == 4:
+        for expense in Expenses.query.filter_by(user_id=uid).all():
+            expenses.append((int(expense.id), int(expense.price)))
+        for profit in Profits.query.filter_by(user_id=uid).all():
+            profits.append((int(profit.id), int(profit.price)))
 
-    return balance + expenses + profits + base_operation_id
+        base_operation_id = [(op_id, typ)]
+    else:
+        expense = Expenses.query.filter_by(id=int(op_id)).one()
+        expenses.append((int(op_id), expense.price))
+
+    return balance + [expenses] + [profits] + base_operation_id
 
 def is_in_db(login, password, code):
     try:
@@ -241,3 +247,11 @@ def check_exp(uid):
     except Exception:
         count = 0
     return count
+
+def count_exp(uid, cat):
+    count = 0
+    s = set()
+    for expense in Expenses.query.filter_by(user_id = uid).all():
+        if expense.cat == cat:
+            s.add(datetime.date(datetime.strptime(expense.date, "%Y-%m-%d")).strftime("%m"))
+    return len(s)
