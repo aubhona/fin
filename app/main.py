@@ -89,7 +89,7 @@ def head():
                     else:
                         res1 = ""
                         res2 = ""
-                        flash("Вы не совершали расходы", "warning")
+                        flash("Недостаточно операций для прогнозирования", "warning")
                 elif btn_reg:
                     if count_month(session["id"], cat):
                         res_cur, res_next = calculate_remaining_expenses_using_linreg(
@@ -123,7 +123,6 @@ def head():
                 res2=res2,
             )
         )
-        response.set_cookie("", "", expires=datetime.now() + timedelta(hours=2))
         return response
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")

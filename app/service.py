@@ -37,25 +37,28 @@ def calculate_remaining_expenses_using_ema(uid, categories):
         data_copy = data.copy()
         current_month = int(data[-1][1])
         del data[-1]
-        for i in range(len(data)):
-            if i == 0:
-                data[i] = int(data[i][1])
-            else:
-                data[i] = k * int(data[i][1]) + data[i - 1] * (1 - k)
-        for_current = data[-1] - current_month
+        if data:
+            for i in range(len(data)):
+                if i == 0:
+                    data[i] = int(data[i][1])
+                else:
+                    data[i] = k * int(data[i][1]) + data[i - 1] * (1 - k)
+            for_current = data[-1] - current_month
 
-        if for_current < 0:
-            for_current = 0
-        data_copy[-1] = (data_copy[-1][0], data_copy[-1][1] + for_current)
-        data_copy.append(("1", 0))
-        for i in range(len(data_copy)):
-            if i == 0:
-                data_copy[i] = int(data_copy[i][1])
-            else:
-                data_copy[i] = k * int(data_copy[i][1]) + data_copy[i - 1] * (1 - k)
-        for_next = data_copy[-1]
+            if for_current < 0:
+                for_current = 0
+            data_copy[-1] = (data_copy[-1][0], data_copy[-1][1] + for_current)
+            data_copy.append(("1", 0))
+            for i in range(len(data_copy)):
+                if i == 0:
+                    data_copy[i] = int(data_copy[i][1])
+                else:
+                    data_copy[i] = k * int(data_copy[i][1]) + data_copy[i - 1] * (1 - k)
+            for_next = data_copy[-1]
 
-        return for_current, for_next
+            return for_current, for_next
+        else:
+            return "", ""
     return "", ""
 
 
