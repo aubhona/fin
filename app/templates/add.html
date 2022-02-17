@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+    {% block content %}
+
+    <input type="checkbox" id="nav-toggle" hidden>
+    <nav class="nav">
+        <label for="nav-toggle" class="nav-toggle" onclick></label>
+        <ul>
+            <li><a href="profile">Профиль</a></li>
+            <li><a href="add">Добавить операцию</a></li>
+            <li><a href="diagram">Диаграмма расходов</a></li>
+            <li><a href="history">История трат</a></li>
+            <li><a href="head">Вернуться на главную страницу</a></li>
+            <li><a href="logout">Выйти</a></li>
+        </ul>
+    </nav>
+
+    <main role="main">
+        <article style="transition: transform .3s; margin-left: 4%; margin-right: 4%; margin-top: 1%; padding: 5px;">
+            <header>
+                <h1>Добавить операцию</h1>
+                <hr>
+            </header>
+
+            <section>
+                <form method="POST">
+                    <p>Заполните чтобы добавить операцию</p>
+
+                    <label for="value" style="display: block;"><b>Введите сумму операции в рублях</b></label>
+                    <input type="number" placeholder="Введите сумму операции" name="price" required min="1" style="display: block;">
+                    <br>
+                    <label for="date" style="display: block;"><b>Введите дату операции</b></label>
+                    <input type="date" name="date" required max="" style="display: block;">
+                    <br>
+
+                    <div style="width: 30%">
+                        <select class="form-select" name="type" size="1" id="oper" required style="margin-bottom: 1%">
+                            <option selected value="=">Выберите тип операции</option>
+                            <option value="+">Прибыль</option>
+                            <option value="-">Расходы</option>
+                        </select>
+
+                        <select name="cat" style="display: none" size="1" id="cat" class="form-select">
+                            <option selected value="">Выберите категорию траты</option>
+                            <option value="Супермаркеты">Супермаркеты</option>
+                            <option value="Развлечение">Развлечение</option>
+                            <option value="Рестораны">Рестораны</option>
+                            <option value="Переводы">Переводы</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <button type="submit" class="btn btn-primary btn-sm">Добавить</button>
+                </form>
+            </section>
+
+            <footer></footer>
+        </article>
+    </main>
+
+    <script type="text/javascript">
+    	var select = document.querySelector("select");
+
+			select.addEventListener('change', function (e) {
+  			var e = document.getElementById("oper");
+				var strUser = e.value;
+        if (strUser === "-"){
+            document.getElementById("cat").style.display = "block"
+        } else if (strUser === "+"){
+            document.getElementById("cat").options[0].selected = true;
+            document.getElementById("cat").style.display = "none";
+        } else if (strUser === "="){
+            document.getElementById("cat").style.display = "none";
+        }
+			})
+    </script>
+    {% endblock %}

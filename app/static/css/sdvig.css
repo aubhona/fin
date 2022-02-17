@@ -1,0 +1,59 @@
+.slide p,
+.slide div,
+.slide [type="checkbox"]{
+    display:block;
+}
+
+.slide [type="checkbox"]:checked ~ p {
+    display:none;
+
+}
+
+.slide [type="checkbox"]:checked ~ div {
+    display:none;
+
+}
+
+.slide1 p,
+.slide1 div,
+.slide1 [type="checkbox"]{
+    display:none;
+}
+
+.slide1 [type="checkbox"]:checked ~ p {
+    display:block;
+
+}
+
+.slide1 [type="checkbox"]:checked ~ div {
+    display:block;
+
+}
+
+
+.slide2 .box,
+.slide2 [type="checkbox"]{
+    display:none;
+}
+
+.slide2 [type="checkbox"]:checked ~  .box {
+    display:block;
+}
+
+
+
+.slide3 p,
+.slide3 div,
+.slide3 [type="checkbox"]{
+    display:block;
+}
+
+.slide3 [type="checkbox"]:checked ~ p {
+    display:none;
+
+}
+
+.slide3 [type="checkbox"]:checked ~ div {
+    display:none;
+
+}
