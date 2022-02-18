@@ -53,19 +53,15 @@ def head():
         last_oper = ls_op(session["id"])
         res1 = ""
         res2 = ""
-        if last_oper == "Вы не совершали расходы.":
-            session["expences"] = False
-        else:
-            session["expences"] = True
         max_pr_cat, max_pr, pop_cat = oper(session["id"])
         img = ""
         if "date" not in session:
-            if session["expences"] == True:
+            if session["expences"]:
                 img = create_diagram_2(session["id"], None)
                 if img:
                     session["date"] = datetime.now().strftime("%Y-%m")
         elif (session["date"] != datetime.now().strftime("%Y-%m")) and (
-            session["expences"] == True
+            session["expences"]
         ):
             img = create_diagram_2(session["id"], None)
             if img:
@@ -174,7 +170,7 @@ def logout():
             session.pop("par")
         if session.get("base"):
             session.pop("base")
-    return redirect("/")
+    return redirect(url_for("/"))
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -332,7 +328,7 @@ def history():
             btn_del = request.form.get("del_history")
             btn_base = request.form.get("base")
             btn_del_base = request.form.get("del_base")
-            if session["expences"] and (btn_his or btn_xlx):
+            if btn_his or btn_xlx:
                 check = request.form.get("check")
                 if check:
                     sdate = None
@@ -524,7 +520,7 @@ def history():
                     else:
                         operat = []
                         flash("Введите начало и конец периода.", "warning")
-            elif session["expences"] and btn_del:
+            elif btn_del:
                 if session.get("len"):
                     oper = []
                     for j, i in operat:
@@ -549,7 +545,7 @@ def history():
                         typ=session["par"][4],
                         cat=set(session["par"][5]),
                     )
-            elif session["expences"] and btn_base:
+            elif btn_base:
                 oper = False
                 if session.get("base"):
                     session.pop("base")
@@ -575,9 +571,8 @@ def history():
                             "Вы указали больше 1 базовой операции, поэтому базовой будет считаться первая  выбранная операция.",
                             "info",
                         )
-            elif session["expences"] and btn_del_base:
-                if session.get("base"):
-                    session.pop("base")
+            elif btn_del_base and session.get("base"):
+                session.pop("base")
         if session.get("base"):
             expenses, profits = calculate_operations_relatively_base(
                 session["id"], session["base"][1][1:], session["base"][1][0], 4
