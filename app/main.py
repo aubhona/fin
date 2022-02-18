@@ -170,7 +170,7 @@ def logout():
             session.pop("par")
         if session.get("base"):
             session.pop("base")
-    return redirect(url_for("/"))
+    return redirect("/")
 
 
 @app.route("/add", methods=["GET", "POST"])
