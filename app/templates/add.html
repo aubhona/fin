@@ -20,57 +20,55 @@
                 <h1>Добавить операцию</h1>
                 <hr>
             </header>
-
             <section>
                 <form method="POST">
                     <p>Заполните чтобы добавить операцию</p>
-
                     <label for="value" style="display: block;"><b>Введите сумму операции в рублях</b></label>
                     <input type="number" placeholder="Введите сумму операции" name="price" required min="1" style="display: block;">
                     <br>
                     <label for="date" style="display: block;"><b>Введите дату операции</b></label>
                     <input type="date" name="date" required max="" style="display: block;">
                     <br>
-
                     <div style="width: 30%">
                         <select class="form-select" name="type" size="1" id="oper" required style="margin-bottom: 1%">
                             <option selected value="=">Выберите тип операции</option>
                             <option value="+">Прибыль</option>
                             <option value="-">Расходы</option>
                         </select>
-
                         <select name="cat" style="display: none" size="1" id="cat" class="form-select">
                             <option selected value="">Выберите категорию траты</option>
                             <option value="Супермаркеты">Супермаркеты</option>
-                            <option value="Развлечение">Развлечение</option>
+                            <option value="Развлечения">Развлечения</option>
                             <option value="Рестораны">Рестораны</option>
                             <option value="Переводы">Переводы</option>
+                            <option value="Аптеки">Аптеки</option>
+                            <option value="Транспорт">Транспорт</option>
+                            <option value="Дом">Дом</option>
+                            <option value="Одежда">Одежда</option>
+                            <option value="Такси">Такси</option>
                         </select>
                     </div>
                     <br>
-
                     <button type="submit" class="btn btn-primary btn-sm">Добавить</button>
                 </form>
             </section>
-
             <footer></footer>
         </article>
     </main>
 
     <script type="text/javascript">
-    	var select = document.querySelector("select");
-
+    var select = document.querySelector("select");
 			select.addEventListener('change', function (e) {
-  			var e = document.getElementById("oper");
-				var strUser = e.value;
-        if (strUser === "-"){
-            document.getElementById("cat").style.display = "block"
-        } else if (strUser === "+"){
-            document.getElementById("cat").options[0].selected = true;
-            document.getElementById("cat").style.display = "none";
-        } else if (strUser === "="){
-            document.getElementById("cat").style.display = "none";
-        }
-			})
+                var e = document.getElementById("oper");
+                    var strUser = e.value;
+            if (strUser === "-"){
+                document.getElementById("cat").style.display = "block"
+            } else if (strUser === "+"){
+                document.getElementById("cat").options[0].selected = true;
+                document.getElementById("cat").style.display = "none";
+            } else if (strUser === "="){
+                document.getElementById("cat").style.display = "none";
+            }
+                })
     </script>
     {% endblock %}

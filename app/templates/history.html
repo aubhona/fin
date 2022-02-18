@@ -72,9 +72,9 @@
                                                 <label for="Супермаркеты" style="display:flexbox;">
                                                     Супермаркеты
                                                 </label>
-                                                <input class="form-check-input" type="checkbox" name = "ex2" id="Развлечение" value = "Развлечение" style="display: inline-block;">
-                                                <label for="Развлечение">
-                                                    Развлечение
+                                                <input class="form-check-input" type="checkbox" name = "ex2" id="Развлечения" value = "Развлечения" style="display: inline-block;">
+                                                <label for="Развлечения">
+                                                    Развлечения
                                                 </label>
                                                 <input class="form-check-input" type="checkbox" name = "ex3" id="Рестораны" value = "Рестораны" style="display: inline-block;">
                                                 <label for="Рестораны">
@@ -83,6 +83,26 @@
                                                 <input class="form-check-input" type="checkbox" name = "ex4" id="Переводы" value = "Переводы" style="display: inline-block;">
                                                 <label for="Переводы">
                                                     Переводы
+                                                </label>
+                                                <input class="form-check-input" type="checkbox" name = "ex5" id="Аптеки" value = "Аптеки" style="display: inline-block;">
+                                                <label for="Аптеки">
+                                                    Аптеки
+                                                </label>
+                                                <input class="form-check-input" type="checkbox" name = "ex6" id="Транспорт" value = "Транспорт" style="display: inline-block;">
+                                                <label for="Транспорт">
+                                                    Транспорт
+                                                </label>
+                                                <input class="form-check-input" type="checkbox" name = "ex7" id="Дом" value = "Дом" style="display: inline-block;">
+                                                <label for="Дом">
+                                                    Дом
+                                                </label>
+                                                <input class="form-check-input" type="checkbox" name = "ex8" id="Одежда" value = "Одежда" style="display: inline-block;">
+                                                <label for="Одежда">
+                                                    Одежда
+                                                </label>
+                                                <input class="form-check-input" type="checkbox" name = "ex9" id="Такси" value = "Такси" style="display: inline-block;">
+                                                <label for="Такси">
+                                                    Такси
                                                 </label>
                                             </div>
                                         </div>
@@ -122,16 +142,17 @@
                 Базовая операция не выбрана
                 {% endif %}
                 <hr>
-                <div class="list-group">
                 {% if oper %}
+                <div style="font-size: large; font-weight: bold;">
+                    История операций:
+                </div>
+                <div class="list-group">
                 {% for mes_oper, id in oper %}
                 <label class="list-group-item">
                     <input class="form-check-input me-1" type="checkbox" name="{{id}}" value="{{id}}">
                     {{mes_oper}}
                 </label>
                 {% endfor %}
-                {% else %}
-                Вы не соверашали операции
                 {% endif %}
                 </div>
                 </form>

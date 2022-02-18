@@ -64,7 +64,7 @@ def get_data_for_xlx(
                 profits.append(profit)
     ex = []
     if cat:
-        if cat != "all":
+        if cat != set("all") and cat != "all":
             for expense in expenses:
                 if expense.cat in cat:
                     ex.append(expense)
@@ -251,7 +251,7 @@ def get_db_expences(uid, sdate, edate, min_sum, max_sum, cat=None):
                     )
                 )
     if cat:
-        if cat != "all":
+        if cat != set("all") and cat != "all":
             for expense in oper:
                 if expense[1] in cat:
                     oper1.append(expense)

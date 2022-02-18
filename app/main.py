@@ -10,7 +10,7 @@ from flask import (
 )
 from app.service import *
 
-count_oper = 4
+count_oper = 9
 
 
 @app.errorhandler(404)
@@ -89,7 +89,7 @@ def head():
                     else:
                         res1 = ""
                         res2 = ""
-                        flash("Недостаточно операций для прогнозирования", "warning")
+                        flash("Недостаточно операций для прогнозирования.", "warning")
                 elif btn_reg:
                     if count_month(session["id"], cat):
                         res_cur, res_next = calculate_remaining_expenses_using_linreg(
@@ -106,11 +106,11 @@ def head():
                         res1 = ""
                         res2 = ""
                         flash(
-                            "Расчёт по линейной регрессии работает, если по даной категории есть данные от 6 месяцев",
+                            "Расчёт по линейной регрессии работает, если по даной категории есть данные от 6 месяцев.",
                             "info",
                         )
             else:
-                flash("Выберите категорию прогнозирования", "warning")
+                flash("Выберите категорию прогнозирования.", "warning")
         response = make_response(
             render_template(
                 "head.html",
@@ -199,7 +199,7 @@ def add():
                             "warning",
                         )
                 else:
-                    flash("Выберите категорию траты", "warning")
+                    flash("Выберите категорию траты.", "warning")
                 session["expences"] += 1
         return render_template("add.html")
     else:
@@ -222,7 +222,7 @@ def diagram():
                     if "date" in session:
                         session.pop("date")
             if not img:
-                flash("Диграмма не может быть создана, пока нет расходов", "info")
+                flash("Диграмма не может быть создана, пока нет расходов.", "info")
         return render_template("diagram.html", img=img)
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")
@@ -242,7 +242,7 @@ def profile():
             b_exp = calculate_operations_relatively_base(
                 session["id"], session["base"][1][1:], session["base"][1][0], 2
             )[0]
-            if b_tot > 0:
+            if b_tot >= 0:
                 b_tot = calculate_operations_relatively_base(
                     session["id"], session["base"][1][1:], session["base"][1][0], 3
                 )[0]
@@ -251,6 +251,13 @@ def profile():
             b_prof = round(b_prof, 2)
             b_exp = round(b_exp, 2)
             b_tot = round(b_tot, 2)
+            b_prof = str(b_prof) + " усл. ед"
+            b_tot = str(b_tot) + " усл. ед"
+            b_exp = str(b_exp) + " усл. ед"
+        else:
+            b_prof = str(b_prof) + " руб."
+            b_tot = str(b_tot) + " руб."
+            b_exp = str(b_exp) + " руб."
         if request.method == "POST":
             btn_ips = request.form.get("ips")
             btn_pas = request.form.get("pas")
@@ -261,18 +268,36 @@ def profile():
                     reap_new_password = request.form.get("reap_new_password")
                     if new_password == reap_new_password:
                         log_reg(session["login"], new_password, 4)
-                        flash("Пароль успешно сменён", "success")
+                        flash("Пароль успешно сменён.", "success")
                     else:
-                        flash("Пароли не совпадают", "warning")
+                        flash("Пароли не совпадают.", "warning")
                 else:
-                    flash("Неправильный пароль", "danger")
+                    flash("Неправильный пароль.", "danger")
             elif btn_ips:
                 try:
                     per = int(request.form.get("per"))
-                    b_prof = round(recalculate_balance(session["id"], per, 1), 2)
-                    b_exp = round(recalculate_balance(session["id"], per, 2), 2)
-                    if b_tot > 0:
-                        b_tot = round(recalculate_balance(session["id"], per, 3), 2)
+                    b_prof = calculate_operations_relatively_base(
+                        session["id"], None, None, 1
+                    )
+                    b_exp = calculate_operations_relatively_base(
+                        session["id"], None, None, 2
+                    )
+                    b_tot = calculate_operations_relatively_base(
+                        session["id"], None, None, 3
+                    )
+                    b_prof = (
+                        str(round(recalculate_balance(session["id"], per, 1), 2))
+                        + " руб."
+                    )
+                    b_exp = (
+                        str(round(recalculate_balance(session["id"], per, 2), 2))
+                        + " руб."
+                    )
+                    if b_tot >= 0:
+                        b_tot = (
+                            str(round(recalculate_balance(session["id"], per, 3), 2))
+                            + " руб."
+                        )
                     else:
                         flash(
                             "Общая сумма не пересчитывается, когда она отрицательна.",
@@ -333,7 +358,7 @@ def history():
                             typ1 = ""
                         if not typ2:
                             typ2 = ""
-                            cat = None
+                            cat = []
                         else:
                             al = request.form.get("all")
                             if not al:
@@ -362,7 +387,7 @@ def history():
                                     min_sum,
                                     max_sum,
                                     typ1 + typ2,
-                                    cat,
+                                    list(cat),
                                 ]
                                 xlx = save_excel(
                                     session["id"],
@@ -374,7 +399,7 @@ def history():
                                     cat=cat,
                                 )
                             else:
-                                flash("Вы не указали категорию трат", "warning")
+                                flash("Вы не указали категорию трат.", "warning")
                         else:
                             operat = get_oper(
                                 session["id"],
@@ -392,7 +417,7 @@ def history():
                                 min_sum,
                                 max_sum,
                                 typ1 + typ2,
-                                cat,
+                                list(cat),
                             ]
                             xlx = save_excel(
                                 session["id"],
@@ -404,7 +429,7 @@ def history():
                                 cat=cat,
                             )
                     else:
-                        flash("Вы не указали тип операции", "warning")
+                        flash("Вы не указали тип операции.", "warning")
                 else:
                     if check:
                         try:
@@ -424,7 +449,7 @@ def history():
                                 typ1 = ""
                             if not typ2:
                                 typ2 = ""
-                                cat = None
+                                cat = []
                             else:
                                 al = request.form.get("all")
                                 if not al:
@@ -453,7 +478,7 @@ def history():
                                         min_sum,
                                         max_sum,
                                         typ1 + typ2,
-                                        cat,
+                                        list(cat),
                                     ]
                                     xlx = save_excel(
                                         session["id"],
@@ -465,7 +490,7 @@ def history():
                                         cat=cat,
                                     )
                                 else:
-                                    flash("Вы не указали категорию трат", "warning")
+                                    flash("Вы не указали категорию трат.", "warning")
                             else:
                                 operat = get_oper(
                                     session["id"],
@@ -483,7 +508,7 @@ def history():
                                     min_sum,
                                     max_sum,
                                     typ1 + typ2,
-                                    cat,
+                                    list(cat),
                                 ]
                                 xlx = save_excel(
                                     session["id"],
@@ -495,10 +520,10 @@ def history():
                                     cat=cat,
                                 )
                         else:
-                            flash("Вы не указали тип операции", "warning")
+                            flash("Вы не указали тип операции.", "warning")
                     else:
                         operat = []
-                        flash("Введите начало и конец периода", "warning")
+                        flash("Введите начало и конец периода.", "warning")
             elif session["expences"] and btn_del:
                 if session.get("len"):
                     oper = []
@@ -522,7 +547,7 @@ def history():
                         min_sum=session["par"][2],
                         max_sum=session["par"][3],
                         typ=session["par"][4],
-                        cat=session["par"][5],
+                        cat=set(session["par"][5]),
                     )
             elif session["expences"] and btn_base:
                 oper = False
@@ -535,7 +560,7 @@ def history():
                     min_sum=session["par"][2],
                     max_sum=session["par"][3],
                     typ=session["par"][4],
-                    cat=session["par"][5],
+                    cat=set(session["par"][5]),
                 )
                 if session.get("len"):
                     for j, i in operat:
@@ -547,7 +572,7 @@ def history():
                                 oper = True
                     if oper:
                         flash(
-                            "Вы указали больше 1 базовой операции, поэтому базовой будет считаться первая операция.",
+                            "Вы указали больше 1 базовой операции, поэтому базовой будет считаться первая  выбранная операция.",
                             "info",
                         )
             elif session["expences"] and btn_del_base:
@@ -578,7 +603,8 @@ def history():
                     )
             for i in range(len(operat)):
                 operat[i] = (dic[operat[i][1]], operat[i][1])
-
+        if not xlx:
+            xlx = "Info.txt"
         return render_template(
             "history.html", oper=operat, xlx=xlx, base=session.get("base")
         )
