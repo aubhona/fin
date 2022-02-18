@@ -1,0 +1,10 @@
+@media screen and (max-width: 900px) {
+    .fon{
+        margin-top: 9%;}
+}
+
+
+@media screen and (min-width: 900px) {
+    .fon{
+        margin-top: 3%;}
+}
