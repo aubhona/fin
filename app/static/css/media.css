@@ -1,8 +1,11 @@
 @media screen and (max-width: 900px) {
     .fon{
-        margin-top: 9%;}
+        /**zoom: 200%;*/
+        margin-top: 10%;}
+    input[rel="1"]{
+            margin-top: 1%;
+        }
 }
-
 
 @media screen and (min-width: 900px) {
     .fon{
