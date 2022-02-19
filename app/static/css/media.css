@@ -11,6 +11,9 @@
     .fut{
         zoom: 200%;
     }
+    .nav{
+        zoom: 200%;
+    }
 }
 
 @media screen and (min-width: 1100px) {
