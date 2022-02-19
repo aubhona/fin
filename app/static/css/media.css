@@ -37,6 +37,9 @@
     div[rel="2"]{
         zoom: 180%;
     }
+    img{
+        zoom: 145%;
+    }
 }
 
 @media screen and (min-width: 1100px) {
