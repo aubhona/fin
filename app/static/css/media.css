@@ -1,13 +1,13 @@
 @media screen and (max-width: 1050px) {
     .fon{
         margin-top: 11%;
-        zoom: 90%;
+        zoom: 100%;
     }
     input[rel="1"]{
             margin-top: 1%;
         }
     body{
-        font-size: 1.5em;
+        font-size: 2em;
     }
 }
 
