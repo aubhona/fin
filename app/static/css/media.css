@@ -11,7 +11,7 @@
     .fut{
         zoom: 200%;
     }
-    .nav-toggle{
+    .nav > ul > li {
         zoom: 200%;
     }
 }
