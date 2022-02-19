@@ -22,7 +22,7 @@
             </header>
 
             <section>
-                    <label for="filt" style="font-size: xx-large;">
+                    <label for="filt" style="font-size: xx-large;" rel="2">
                         <b>Фильтр</b>
                     </label>
                     <div style="width: 30%">
@@ -34,14 +34,14 @@
                                         Показать операции за все время
                                     </label>
                                     <div style="margin-top: 2%; margin-bottom: 1%; ">
-                                        <div style="font-size: large; font-weight: bold;">Выберите за какой промежуток:</div>
-                                        <label for="time1" style="font-size: large;">
+                                        <div style="font-size: large; font-weight: bold;" rel="2">Выберите за какой промежуток:</div>
+                                        <label for="time1" style="font-size: large;" rel="2">
                                             Выберите начало периода:
                                         </label>
                                         <input type="date" name="time1" style="margin-bottom: 1%;">
                                         <br>
 
-                                        <label for="time2" style="font-size: large;">
+                                        <label for="time2" style="font-size: large;" rel="2">
                                             Выберите конец периода:
                                         </label>
                                         <input type="date" name="time2" style="margin-bottom: 1%;">
@@ -49,7 +49,7 @@
                                     </div>
                             </div>
                             <div style="margin-top: 2%; margin-bottom: 1%; ">
-                                <div style="font-size: large; font-weight: bold;">Выберите тип операции:</div>
+                                <div style="font-size: large; font-weight: bold;" rel="2">Выберите тип операции:</div>
                                 <input class="form-check-input" type="checkbox" id = "vav" name = "prof"  value = "+" style="display: inline-block;">
                                 <label for="vav">
                                     Прибыль
@@ -67,7 +67,7 @@
                                                 Все категории
                                             </label>
                                             <div style="margin-top: 2%; margin-bottom: 1%; ">
-                                                <div style="font-size: large; font-weight: bold;">Выберите категорию</div>
+                                                <div style="font-size: large; font-weight: bold;" rel="2">Выберите категорию</div>
                                                 <label>
                                                     <input class="form-check-input" type="checkbox" name = "ex1" id="Супермаркеты" value = "Супермаркеты" style="display: inline-flex;">
                                                     <label for="Супермаркеты">
@@ -128,51 +128,51 @@
                             </div>
                             </div>
                             <div>
-                                <div style="font-size: large; font-weight: bold;">
+                                <div style="font-size: large; font-weight: bold;" rel="2">
                                     Укажите ограничение по величине операции:
                                 </div>
 
-                                <label for="min" style="font-size: large;">Введите минимум:</label>
+                                <label for="min" style="font-size: large;" rel="2">Введите минимум:</label>
                                 <input type="number" name="min" style="margin-bottom: 1%;">
                                 <br>
 
-                                <label for="max" style="font-size: large;">Введите максимум:</label>
+                                <label for="max" style="font-size: large;" rel="2">Введите максимум:</label>
                                 <input type="number" name="max">
                             </div>
 
-                            <input class="btn btn-primary btn-sm" type="submit" name = "history" value="Подтвердить" style="margin-top: 2%;">
+                            <input class="btn btn-primary btn-sm" type="submit" name = "history" value="Подтвердить" style="margin-top: 2%;" rel="3">
                         </form>
                     </div>
                 <hr>
                 <a href="{{ url_for('static', filename = 'resources/' + xlx)}}" download=""  class="btn btn-primary btn-sm">
-                    <input class="btn btn-primary btn-sm" type="submit" name = "xlx_history" value="Скачать excel вариант">
+                    <input class="btn btn-primary btn-sm" type="submit" name = "xlx_history" value="Скачать excel вариант" rel="3">
                 </a>
                 <hr>
                 <form method="POST">
-                <input class="btn btn-primary btn-sm" type="submit" name = "del_history" value="Удалить выбранные операции" rel="1">
-                <input class="btn btn-primary btn-sm" type="submit" name = "base" value="Сделать выбранную операцию базовой" rel="1">
-                <input class="btn btn-primary btn-sm" type="submit" name = "del_base" value="Отменить базовую операцию" rel="1">
-                <hr>
-                {% if base %}
-                {{base[0]}}
-                Эта операция выбрана базовой
-                {% else %}
-                Базовая операция не выбрана
-                {% endif %}
-                <hr>
-                {% if oper %}
-                <div style="font-size: large; font-weight: bold;">
-                    История операций:
-                </div>
-                <div class="list-group">
-                {% for mes_oper, id in oper %}
-                <label class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" name="{{id}}" value="{{id}}">
-                    {{mes_oper}}
-                </label>
-                {% endfor %}
-                {% endif %}
-                </div>
+                    <input class="btn btn-primary btn-sm" type="submit" name = "del_history" value="Удалить выбранные операции" rel="1">
+                    <input class="btn btn-primary btn-sm" type="submit" name = "base" value="Сделать выбранную операцию базовой" rel="1">
+                    <input class="btn btn-primary btn-sm" type="submit" name = "del_base" value="Отменить базовую операцию" rel="1">
+                    <hr>
+                    {% if base %}
+                    {{base[0]}}
+                    Эта операция выбрана базовой
+                    {% else %}
+                    Базовая операция не выбрана
+                    {% endif %}
+                    <hr>
+                    {% if oper %}
+                    <div style="font-size: large; font-weight: bold;" rel="2">
+                        История операций:
+                    </div>
+                        <div class="list-group">
+                        {% for mes_oper, id in oper %}
+                        <label class="list-group-item">
+                            <input class="form-check-input me-1" type="checkbox" name="{{id}}" value="{{id}}">
+                            {{mes_oper}}
+                        </label>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
                 </form>
             </section>
 

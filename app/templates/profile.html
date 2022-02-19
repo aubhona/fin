@@ -51,15 +51,15 @@
                 {% endif %}
                 <hr>
                 <form method="POST">
-                <label for="value" style="display: block;"><b>Введите, на какой срок учитывать инфляцию(месяцы)</b></label>
-                <br>
-                <input type="number" placeholder="Введите срок" name="per" min="1" style="display: block;">
-                <br>
-                <input class="btn btn-primary btn-sm" type="submit" name = "ips" value="Отобразить общие остатки с учётом инфляции">
+                    <label for="value" style="display: block;"><b>Введите, на какой срок учитывать инфляцию(месяцы)</b></label>
+                    <br>
+                    <input type="number" placeholder="Введите срок" name="per" min="1" style="display: block;" rel="2">
+                    <br>
+                    <input class="btn btn-primary btn-sm" type="submit" name = "ips" value="Отобразить общие остатки с учётом инфляции" rel="2">
                 </form>
                 <hr>
                 <div class="slide1">
-                    <label for="smnpar" class="btn btn-secondary btn-sm">
+                    <label for="smnpar" class="btn btn-secondary btn-sm" rel="2">
                         Сменить пароль
                     </label>
                     <input type="checkbox" id="smnpar" style="display: none;">
@@ -67,20 +67,20 @@
                         <form method="POST">
                             <label for="old_password"><b>Введите старый пароль</b></label>
                             <br>
-                            <input name="old_password" type="password">
+                            <input name="old_password" type="password" rel="2">
                             <br>
 
                             <label for="new_password"><b>Введите новый пароль</b></label>
                             <br>
-                            <input name="new_password" type="password">
+                            <input name="new_password" type="password" rel="2">
                             <br>
 
                             <label for="reap_new_password"><b>Повторите новый пароль</b></label>
                             <br>
-                            <input name="reap_new_password" type="password">
+                            <input name="reap_new_password" type="password" rel="2">
                             <br>
                             <br>
-                            <input class="btn btn-primary btn-sm" type="submit" name = "pas" value="Подтвердить">
+                            <input class="btn btn-primary btn-sm" type="submit" name = "pas" value="Подтвердить" rel="2">
                         </form>
                     </div>
                 </div>

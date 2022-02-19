@@ -23,7 +23,7 @@
             <section>
                 <hr>
                 <div>
-                    <label for="filt" style="font-size: large;">
+                    <label for="filt" style="font-size: large;" rel="2">
                         <br>Настройте вашу диаграмму</br>
                     </label>
                     <div>
@@ -43,7 +43,7 @@
                                 <option value="2">Круговая</option>
                             </select>
                             <br>
-                            <button type="submit" class="btn btn-primary btn-sm">Применить</button>
+                            <button type="submit" class="btn btn-primary btn-sm" rel="2">Применить</button>
                         </form>
                         {% if img %}
                         <img src="{{ url_for('static', filename='img/' + img)}}" style="margin-top: 1%; width: 450px; height: 350px; border-radius: 10px; border-style: outset;" alt="Вы не совершали расходы.">

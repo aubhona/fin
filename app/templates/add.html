@@ -24,18 +24,18 @@
                 <form method="POST">
                     <p>Заполните чтобы добавить операцию</p>
                     <label for="value" style="display: block;"><b>Введите сумму операции в рублях</b></label>
-                    <input type="number" placeholder="Введите сумму операции" name="price" required min="1" style="display: block;">
+                    <input type="number" placeholder="Введите сумму операции" name="price" required min="1" style="display: block;" rel="2">
                     <br>
                     <label for="date" style="display: block;"><b>Введите дату операции</b></label>
-                    <input type="date" name="date" required max="" style="display: block;">
+                    <input type="date" name="date" required max="" style="display: block;" rel="2">
                     <br>
                     <div style="width: 30%">
-                        <select class="form-select" name="type" size="1" id="oper" required style="margin-bottom: 1%">
+                        <select class="form-select" name="type" size="1" id="oper" required style="margin-bottom: 1%" rel="2">
                             <option selected value="=">Выберите тип операции</option>
                             <option value="+">Прибыль</option>
                             <option value="-">Расходы</option>
                         </select>
-                        <select name="cat" style="display: none" size="1" id="cat" class="form-select">
+                        <select name="cat" style="display: none" size="1" id="cat" class="form-select" rel="2">
                             <option selected value="">Выберите категорию траты</option>
                             <option value="Супермаркеты">Супермаркеты</option>
                             <option value="Развлечения">Развлечения</option>
@@ -49,7 +49,7 @@
                         </select>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-primary btn-sm">Добавить</button>
+                    <button type="submit" class="btn btn-primary btn-sm" rel="2">Добавить</button>
                 </form>
             </section>
             <footer></footer>
