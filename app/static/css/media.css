@@ -1,22 +1,17 @@
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1050px) {
     .fon{
-        zoom: 120%;
-        margin-top: 10%;}
+        margin-top: 11%;
+        zoom: 90%;
+    }
     input[rel="1"]{
             margin-top: 1%;
         }
-    .fon1{
-        zoom: 120%;
-    }
-    .fut{
-        zoom: 120%;
-    }
     body{
-        font-size: 2em;
+        font-size: 1.5em;
     }
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 1050px) {
     .fon{
         margin-top: 3%;}
 }
