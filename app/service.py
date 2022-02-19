@@ -323,7 +323,7 @@ def chan_date(date, typ):
         mes = "заработали "
     else:
         mes = "потратили на категорию "
-    return f"{day} {dic_month[month]} {dic_week[week_day]} Вы {mes}"
+    return f"В {year} году {day} {dic_month[month]} {dic_week[week_day]} Вы {mes}"
 
 
 def get_oper(uid, sdate, edate, min_sum, max_sum, typ, cat=None):
