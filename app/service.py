@@ -44,7 +44,6 @@ def calculate_remaining_expenses_using_ema(uid, categories):
                 else:
                     data[i] = k * int(data[i][1]) + data[i - 1] * (1 - k)
             for_current = data[-1] - current_month
-
             if for_current < 0:
                 for_current = 0
             data_copy[-1] = (data_copy[-1][0], data_copy[-1][1] + for_current)
@@ -55,7 +54,6 @@ def calculate_remaining_expenses_using_ema(uid, categories):
                 else:
                     data_copy[i] = k * int(data_copy[i][1]) + data_copy[i - 1] * (1 - k)
             for_next = data_copy[-1]
-
             return for_current, for_next
         else:
             return "", ""
@@ -104,8 +102,6 @@ def calculate_remaining_expenses_using_linreg(uid, categories):
     data_for_pred = sum(list(map(lambda i: int(i[1]), data_copy))[-3:])
     pred = model1.predict(np.array(data_for_pred).reshape((-1, 1)))
     for_next1 = pred[0]
-    # return for_current1, for_next1
-
     x = []
     y = []
     del data_second_method[-1]
@@ -160,11 +156,16 @@ def create_diagram_1(uid=1, period=1):
             data[label] = colors[i]
         handles = [plt.Rectangle((0, 0), 1, 1, color=data[label]) for label in labels]
         plt.bar(
-            list(map(str, values)), values, label="Total", color=list(data.values())
+            list(map(str, values)),
+            values,
+            width,
+            label="Total",
+            color=list(data.values()),
         )
         plt.legend(handles, labels)
         path = "./app/static/img/{0}.png".format(str(uid) + "-diag1")
         plt.savefig(path, facecolor="#FFE4E1")
+        plt.close()
         # plt.show()
         return "{0}.png".format(str(uid) + "-diag1")
     return ""
@@ -183,12 +184,10 @@ def create_diagram_2(uid=1, period=1):
         for i in range(len(sizes)):
             sizes[i] = (sizes[i] / summ) * 100
         sorted_sizes = sorted(sizes)
-
         for i in sorted_sizes:
             index = sizes.index(i)
             explode[index] = 0.8 * (i / 100) ** 2
         explode[sizes.index(min(sizes))] = 0
-
         fig1, ax1 = plt.subplots()
         ax1.pie(
             sizes,
@@ -198,10 +197,11 @@ def create_diagram_2(uid=1, period=1):
             shadow=True,
             startangle=80,
         )
-        ax1.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax1.axis("equal")
         ax1.set_title("Расходы по категориям")
         path = "./app/static/img/{0}.png".format(str(uid) + "-diag2")
         plt.savefig(path, facecolor="#FFE4E1")
+        plt.close()
         # plt.show()
         return "{0}.png".format(str(uid) + "-diag2")
     return ""
