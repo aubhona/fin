@@ -137,6 +137,17 @@ def calculate_remaining_expenses_using_linreg(uid, categories):
 
 def create_diagram_1(uid=1, period=1):
     data = get_stat(uid, period)
+    colors = [
+        "#ffa500",
+        "#1E90FF",
+        "#ff4f00",
+        "#ff8ab1",
+        "#072A50",
+        "#F67993",
+        "#188108",
+        "#F2E70D",
+        "#9CD8F1",
+    ]
     if data:
         values = []
         labels = []
@@ -144,14 +155,14 @@ def create_diagram_1(uid=1, period=1):
         for item in data:
             labels.append(item[0])
             values.append(int(item[1]))
-
-        fig, ax = plt.subplots()
-
-        ax.bar(labels, values, width, label="Total", color=["#ffa500", "#1E90FF"])
-
-        ax.set_ylabel("Потрачено в общем")
-        ax.set_title("Расходы по категориям")
-
+        data = {}
+        for i, label in enumerate(labels):
+            data[label] = colors[i]
+        handles = [plt.Rectangle((0, 0), 1, 1, color=data[label]) for label in labels]
+        plt.bar(
+            list(map(str, values)), values, label="Total", color=list(data.values())
+        )
+        plt.legend(handles, labels)
         path = "./app/static/img/{0}.png".format(str(uid) + "-diag1")
         plt.savefig(path, facecolor="#FFE4E1")
         # plt.show()
