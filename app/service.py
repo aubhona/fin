@@ -255,7 +255,6 @@ def calculate_operations_relatively_base(user_id, op_id, typ, code):
         )
         if code != 4:
             recalculated_balance = [int(data[0]) / base_operation[1]]
-        if code != 4:
             return (
                 recalculated_balance + [recalculated_expenses] + [recalculated_profits]
             )

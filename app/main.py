@@ -179,24 +179,27 @@ def add():
         if request.method == "POST":
             price = int(request.form.get("price"))
             date = request.form.get("date")
-            type_oper = request.form.get("type")
-            if type_oper == "+":
-                oper_add(session["id"], price, date)
-                flash("Успешно добавлено.", "success")
-            else:
-                cat = request.form.get("cat")
-                if cat:
-                    res = oper_add(session["id"], price, date, cat=cat)
-                    if res is None:
-                        flash("Успешно добавлено.", "success")
-                    else:
-                        flash(
-                            "Операция добвлена в историю, но общий остаток баланса не изменен, так как балана недостаточно.",
-                            "warning",
-                        )
+            if datetime.strptime(date, "%Y-%m-%d") <= datetime.now():
+                type_oper = request.form.get("type")
+                if type_oper == "+":
+                    oper_add(session["id"], price, date)
+                    flash("Успешно добавлено.", "success")
                 else:
-                    flash("Выберите категорию траты.", "warning")
-                session["expences"] += 1
+                    cat = request.form.get("cat")
+                    if cat:
+                        res = oper_add(session["id"], price, date, cat=cat)
+                        if res is None:
+                            flash("Успешно добавлено.", "success")
+                        else:
+                            flash(
+                                "Операция добвлена в историю, но общий остаток баланса не изменен, так как балана недостаточно.",
+                                "warning",
+                            )
+                    else:
+                        flash("Выберите категорию траты.", "warning")
+                    session["expences"] += 1
+            else:
+                flash("Данный день не наступил, выберите другую дату.", "danger")
         return render_template("add.html")
     else:
         flash("Пожалуйста авторизуйтесь.", "danger")
@@ -246,9 +249,12 @@ def profile():
                 flash("Общая сумма не пересчитывается, когда она отрицательна.", "info")
             b_prof = round(b_prof, 2)
             b_exp = round(b_exp, 2)
-            b_tot = round(b_tot, 2)
+            if b_tot >= 0:
+                b_tot = round(b_tot, 2)
+                b_tot = str(b_tot) + " усл. ед"
+            else:
+                b_tot = str(b_tot) + " руб."
             b_prof = str(b_prof) + " усл. ед"
-            b_tot = str(b_tot) + " усл. ед"
             b_exp = str(b_exp) + " усл. ед"
         else:
             b_prof = str(b_prof) + " руб."
@@ -566,6 +572,8 @@ def history():
                         else:
                             if op:
                                 oper = True
+                    if not session.get("base"):
+                        flash("Вы не выбрали операцию.", "warning")
                     if oper:
                         flash(
                             "Вы указали больше 1 базовой операции, поэтому базовой будет считаться первая  выбранная операция.",

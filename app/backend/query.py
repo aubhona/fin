@@ -101,8 +101,12 @@ def get_base_data(uid, op_id, typ, code):
 
         base_operation_id = [(op_id, typ)]
     else:
-        expense = Expenses.query.filter_by(id=int(op_id)).one()
-        expenses.append((int(op_id), expense.price))
+        if typ == "+":
+            profit = Expenses.query.filter_by(id=int(op_id)).one()
+            profits.append((int(op_id), profit.price))
+        else:
+            expense = Expenses.query.filter_by(id=int(op_id)).one()
+            expenses.append((int(op_id), expense.price))
 
     return balance + [expenses] + [profits] + base_operation_id
 
