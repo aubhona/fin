@@ -198,6 +198,10 @@ def add():
                     else:
                         flash("Выберите категорию траты.", "warning")
                     session["expences"] += 1
+                    if session.get("date") and datetime.strptime(
+                        date, "%Y-%m-%d"
+                    ).strftime("%Y-%m") == datetime.now().strftime("%Y-%m"):
+                        session.pop("date")
             else:
                 flash("Данный день не наступил, выберите другую дату.", "danger")
         return render_template("add.html")
